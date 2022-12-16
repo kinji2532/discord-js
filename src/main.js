@@ -78,9 +78,11 @@ function connect() {
     const data = JSON.parse(e.data);
 
     if(data.op === 1) {
+      sendMessage('op 1 request', '1053457173314801686');
       connection.send(`{ "op": 1, "d": ${reconnect.s||null} }`);
     }
     else if(data.op === 7) {
+      sendMessage('op 7 request', '1053457173314801686');
       connection.send(JSON.stringify({
         "op": 6,
         "d": {
@@ -91,8 +93,8 @@ function connect() {
       }));
     }
     else if(data.op === 9) {
+      sendMessage('op 9 request', '1053457173314801686');
       connection.close();
-      connect();
     }
     else if(data.op === 10) {
       const interval = data.d.heartbeat_interval;
@@ -119,17 +121,24 @@ function connect() {
       }, interval);
       return;
     }
-
-    if(!data.t || ![ 'READY', 'MESSAGE_CREATE'].includes(data.t)) return;
+    else if(data.op !== 0) sendMessage(data.op + ' request', '1053457173314801686');
 
     reconnect.s = data.s;
+
+    if(!data.t || ![ 'READY', 'MESSAGE_CREATE'].includes(data.t)) return;
 
     event.emit(data.t?.toLowerCase(), data.d);
 
     //console.log(new Date(), data.t?.toLowerCase());
   };
 
+  connection.onclose = () => {
+    console.log('reconnected.');
+    connect();
+  };
+
   connection.onerror = error => {
+    sendMessage('error', '1053457173314801686');
     console.log("エラー発生イベント受信", error.data);
   };
 };
