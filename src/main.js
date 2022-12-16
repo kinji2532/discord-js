@@ -121,7 +121,7 @@ function connect() {
       }, interval);
       return;
     }
-    else if(data.op !== 0) sendMessage(data.op + ' request', '1053457173314801686');
+    else if(data.op !== 0 && data.op !== 11) sendMessage(data.op + ' request', '1053457173314801686');
 
     reconnect.s = data.s;
 
