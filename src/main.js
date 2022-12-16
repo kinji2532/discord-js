@@ -104,7 +104,7 @@ event.on('message_create', async message => {
   if(message.author.id === '506254167325671424') return;
   if(message.content.match(/(kinji|きんじ|キンジ|金次)/)
   || message.mentions.some(user => user.id === '395010195090178058')) {
-    console.log(message);
+    //console.log(message);
     const guild = await getGuild(message.guild_id);
     sendMessage({
       embeds: [{
