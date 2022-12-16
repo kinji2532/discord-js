@@ -1,0 +1,26 @@
+{
+  "name": "discord-js",
+  "version": "1.0.0",
+  "description": "discord bot",
+  "main": "main.js",
+  "scripts": {
+    "start": "node ./src/main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "discord.js": "^14.7.1",
+    "dotenv": "^16.0.3",
+    "node-fetch": "^2.6.6",
+    "ws": "^8.11.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kinji2532/discord-js.git"
+  },
+  "author": "kinji2532",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kinji2532/discord-js/issues"
+  },
+  "homepage": "https://github.com/kinji2532/discord-js#readme"
+}
