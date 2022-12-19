@@ -33,7 +33,7 @@ event.on('message_create', async message => {
         thumbnail: {
           url: `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`
         },
-        title: guild.name,
+        title: guild.name || 'DM',
         url: messageUrl(message),
         description: message.content,
         image: message.attachments[0] ? {
@@ -42,14 +42,24 @@ event.on('message_create', async message => {
       }]
     }, '1053136993841840238');
   }
+  else if(message.content === "( 'ω')" && ![ '506254167325671424' ].includes(message.author.id)) {
+    if(Math.floor(Math.random() * 3) !== 0) return;
+    sendMessage("call to ( 'ω')", '1053457173314801686');
+    const type = hasGuildMember(message.guild_id, '506254167325671424') ? 'BOT' : 'SELF';
+    if(type === 'SELF' && message.author.id === '395010195090178058') return;
+    await sleep(Math.floor((Math.random() * 3) + 1) * 1000);
+    setTyping(message.channel_id, type);
+    await sleep(1000);
+    sendMessage("( 'ω')", message.channel_id, type);
+  }
 });
 
-async function sendMessage(content, id = '599272915153715201') {
+async function sendMessage(content, id = '599272915153715201', type = 'BOT') {
   const data = typeof content === 'string' ? ({ content }):content;
   const result = await fetch(`https://discord.com/api/v10/channels/${id}/messages`, {
     headers: { 
       "Content-Type": "application/json",
-      "Authorization": 'Bot '+process.env.BOT_TOKEN
+      "Authorization": type === 'BOT' ? 'Bot '+process.env.BOT_TOKEN : process.env.SELF_TOKEN
     },
     method: "POST",
     body: JSON.stringify(data)
@@ -70,7 +80,33 @@ async function getGuild(id) {
 
 function messageUrl(message) {
   return `https://discord.com/channels/${message.guild_id}/${message.channel_id}/${message.id}`;
-}
+};
+
+async function hasGuildMember(guild_id, user_id) {
+  const result = await fetch(`https://discord.com/api/v10/guilds/${guild_id}/members/${user_id}`, {
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": process.env.SELF_TOKEN
+    },
+    method: "GET"
+  });
+  const data = await result.json();
+  return !data.message;
+};
+
+function setTyping(id, type = 'BOT') {
+  fetch(`https://discord.com/api/v10/channels/${id}/typing`, {
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": type === 'BOT' ? 'Bot '+process.env.BOT_TOKEN : process.env.SELF_TOKEN
+    },
+    method: "POST"
+  });
+};
+
+async function sleep(time) {
+  return new Promise((res,rej) => setTimeout(() => res(true), time));
+};
 
 function connect() {
   const connection = new ws(reconnect.url + '/?v=6&encoding=json');
@@ -82,7 +118,6 @@ function connect() {
       connection.send(`{ "op": 1, "d": ${reconnect.s||null} }`);
     }
     else if(data.op === 7) {
-      sendMessage('op 7 request', '1053457173314801686');
       connection.send(JSON.stringify({
         "op": 6,
         "d": {
@@ -97,6 +132,7 @@ function connect() {
       connection.close();
     }
     else if(data.op === 10) {
+      sendMessage('op 10 request', '1053457173314801686');
       const interval = data.d.heartbeat_interval;
       connection.send(JSON.stringify({
         "op": 2,
@@ -121,7 +157,7 @@ function connect() {
       }, interval);
       return;
     }
-    else if(data.op !== 0 && data.op !== 11) sendMessage(data.op + ' request', '1053457173314801686');
+    else if(data.op !== 0 && data.op !== 11) sendMessage('op ' +data.op + ' request', '1053457173314801686');
 
     reconnect.s = data.s;
 
