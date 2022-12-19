@@ -40,7 +40,7 @@ event.on('message_create', async message => {
           url: message.attachments[0].url
         }:undefined
       }]
-    }, '1053136993841840238');
+    }, '593069734656737313');
   }
   else if(message.content === "( 'ω')" && ![ '506254167325671424' ].includes(message.author.id)) {
     if(Math.floor(Math.random() * 3) !== 0) return;
@@ -51,6 +51,12 @@ event.on('message_create', async message => {
     setTyping(message.channel_id, type);
     await sleep(1000);
     sendMessage("( 'ω')", message.channel_id, type);
+  }
+  if(message.author.id !== '395010195090178058') return;
+  const [ cmd, ...args ] = message.content.split(' ');
+  if(cmd === 'delete') {
+    deleteMessage(message.channel_id, message.id, 'SELF');
+    args.forEach(message_id => deleteMessage(message.channel_id, message_id));
   }
 });
 
@@ -65,6 +71,16 @@ async function sendMessage(content, id = '599272915153715201', type = 'BOT') {
     body: JSON.stringify(data)
   });
   return await result.json();
+};
+
+async function deleteMessage(channel_id, message_id, type = 'BOT') {
+  fetch(`https://discord.com/api/v10/channels/${channel_id}/messages/${message_id}`, {
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": type === 'BOT' ? 'Bot '+process.env.BOT_TOKEN : process.env.SELF_TOKEN
+    },
+    method: "DELETE"
+  });
 };
 
 async function getGuild(id) {
