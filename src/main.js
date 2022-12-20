@@ -58,6 +58,17 @@ event.on('message_create', async message => {
     deleteMessage(message.channel_id, message.id, 'SELF');
     args.forEach(message_id => deleteMessage(message.channel_id, message_id));
   }
+  else if(cmd === 'send') {
+    deleteMessage(message.channel_id, message.id, 'SELF');
+    sendMessage(JSON.parse(args.join(' ')), message.channel_id);
+  }
+});
+
+event.on('message_reaction_add', async react => {
+  const message = await getMessage(react.channel_id, react.message_id);
+  if(react.emoji.name !== 'delete'
+  || message.author.id !== '506254167325671424') return;
+  deleteMessage(message.channel_id, message.id);
 });
 
 async function sendMessage(content, id = '599272915153715201', type = 'BOT') {
@@ -88,6 +99,17 @@ async function getGuild(id) {
     headers: { 
       "Content-Type": "application/json",
       "Authorization": process.env.SELF_TOKEN
+    },
+    method: "GET"
+  });
+  return await result.json();
+};
+
+async function getMessage(channel_id, message_id) {
+  const result = await fetch(`https://discord.com/api/v10/channels/${channel_id}/messages/${message_id}`, {
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": 'Bot ' + process.env.BOT_TOKEN
     },
     method: "GET"
   });
@@ -177,7 +199,7 @@ function connect() {
 
     reconnect.s = data.s;
 
-    if(!data.t || ![ 'READY', 'MESSAGE_CREATE'].includes(data.t)) return;
+    if(!data.t || ![ 'READY', 'MESSAGE_CREATE', 'MESSAGE_REACTION_ADD' ].includes(data.t)) return;
 
     event.emit(data.t?.toLowerCase(), data.d);
 
