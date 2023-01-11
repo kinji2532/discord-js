@@ -22,6 +22,9 @@ event.on('message_create', async message => {
   if(message.author.id === '506254167325671424') return;
   if(message.content.match(/(kinji|きんじ|キンジ|金次)/)
   || message.mentions.some(user => user.id === '395010195090178058')) {
+    const channel = await getChannel(message.channel_id);
+
+    if(channel.type === 1) return;
     //console.log(message);
     const guild = await getGuild(message.guild_id);
     const result = await sendMessage({
@@ -125,6 +128,17 @@ async function getGuild(id) {
   return await result.json();
 };
 
+async function getChannel(id) {
+  const result = await fetch(`https://discord.com/api/v10/channels/${id}`, {
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": process.env.SELF_TOKEN
+    },
+    method: "GET"
+  });
+  return await result.json();
+};
+
 async function getMessage(ch_id, msg_id) {
   const result = await fetch(`https://discord.com/api/v10/channels/${ch_id}/messages/${msg_id}`, {
     headers: { 
@@ -215,7 +229,7 @@ function connect() {
             "referrer_current": "", "referring_domain_current": "", "release_channel": "stable",
             "client_build_number": 99811, "client_event_source": null
           },
-          "presence": { "status": "online", "since": 0, "activities": [], "afk": false },
+          "presence": { "status": "offline", "since": 0, "activities": [], "afk": false },
           "compress": false,
           "client_state": { "guild_hashes": {}, "highest_last_message_id": "0", "read_state_version": 0, "user_guild_settings_version": -1 }
         }
