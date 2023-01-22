@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 import ws from 'ws';
 import { sendMessage } from './functions.js';
 
-import './interactions/index.js';
+//import './interactions/index.js';
 
 import dotenv from 'dotenv';
 dotenv.config();

@@ -75,7 +75,3 @@ event.on('message_reaction_add', async react => {
   || message.author.id !== '506254167325671424') return;
   deleteMessage(message.channel_id, message.id);
 });
-
-event.on('interaction_create', async interaction => {
-  console.log(interaction);
-});
