@@ -5,7 +5,7 @@ import express from 'express';
 const app = express();
 
 const server = app.listen(3000, function(){
-    console.log("[interactions] listening to PORT:" + server.address().port);
+    console.log("[interactions] listening to:" + server.address());
 });
 
 app.post("/", async (request, response) => {
@@ -48,5 +48,9 @@ app.post("/", async (request, response) => {
       console.log('?', message);
       response.status(200).send({ content: "Unknown Type" });
     }
+  } else {
+    let param = {"値":"これはサンプルAPIです"};
+    response.header('Content-Type', 'application/json; charset=utf-8')
+    response.send(param);  
   }
 });
