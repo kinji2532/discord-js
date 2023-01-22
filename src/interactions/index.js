@@ -8,6 +8,12 @@ const server = app.listen(3000, function(){
     console.log("[interactions] listening to:", server.address());
 });
 
+app.get("/", function(req, res, next) {
+  var param = {"値":"これはサンプルAPIです"};
+  res.header('Content-Type', 'application/json; charset=utf-8')
+  res.send(param);
+});
+
 app.post("/", async (request, response) => {
   const signature = request.headers["x-signature-ed25519"];
   const timestamp = request.headers["x-signature-timestamp"];
