@@ -9,12 +9,14 @@ const server = app.listen(3000, function(){
 });
 
 app.get("/", function(req, res, next) {
+  console.log('get');
   var param = {"値":"これはサンプルAPIです"};
   res.header('Content-Type', 'application/json; charset=utf-8')
   res.send(param);
 });
 
 app.post("/", async (request, response) => {
+  console.log('post');
   const signature = request.headers["x-signature-ed25519"];
   const timestamp = request.headers["x-signature-timestamp"];
   const rawBody = await getRawBody(request);
