@@ -5,13 +5,15 @@ import express from 'express';
 const app = express();
 
 const server = app.listen(3000, function(){
-    console.log("[interactions] listening to:" + server.address());
+    console.log("[interactions] listening to:", server.address());
 });
 
 app.post("/", async (request, response) => {
   const signature = request.headers["x-signature-ed25519"];
   const timestamp = request.headers["x-signature-timestamp"];
   const rawBody = await getRawBody(request);
+
+  console.log(rawBody, signature, timestamp, process.env.PUBLIC_KEY);
 
   const isValidRequest = verifyKey(rawBody, signature, timestamp, process.env.PUBLIC_KEY);
 
