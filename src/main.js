@@ -75,3 +75,8 @@ event.on('message_reaction_add', async react => {
   || message.author.id !== '506254167325671424') return;
   deleteMessage(message.channel_id, message.id);
 });
+
+event.on('application_command', async (message, response) => {
+  console.log(message);
+  response.send({ content: 'OK' });
+});
