@@ -26,7 +26,7 @@ app.post('/', async (request, response) => {
 
   const message = request.body || {};
 
-  console.log(request);
+  console.log('a', message);
 
   if (message.type === InteractionType.PING) {
     response.send({ type: InteractionResponseType.PONG });
@@ -60,7 +60,7 @@ app.post('/', async (request, response) => {
 
 app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), (req, res) => {
   const message = req.body;
-  console.log(message);
+  console.log('b', message);
   if (message.type === InteractionType.APPLICATION_COMMAND) {
     res.send({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
