@@ -1,4 +1,4 @@
-import { InteractionResponseType, InteractionType, verifyKey, verifyKeyMiddleware } from 'discord-interactions';
+import { InteractionResponseType, InteractionType, verifyKey } from 'discord-interactions';
 import getRawBody from 'raw-body';
 import cmdList from './commands.js';
 import express from 'express';
@@ -15,7 +15,7 @@ app.get("/", function(req, res, next) {
   res.send(param);
 });
 
-app.post('/', verifyKeyMiddleware(process.env.PUBLIC_KEY), async (request, response, next) => {
+app.post('/', async (request, response, next) => {
   const signature = request.headers["x-signature-ed25519"];
   const timestamp = request.headers["x-signature-timestamp"];
   const rawBody = await getRawBody(request);
