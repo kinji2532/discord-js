@@ -1,4 +1,4 @@
-import { InteractionResponseType, InteractionType, verifyKeyMiddleware } from 'discord-interactions';
+import { InteractionResponseType, InteractionType, verifyKey, verifyKeyMiddleware } from 'discord-interactions';
 import getRawBody from 'raw-body';
 import cmdList from './commands.js';
 import express from 'express';
@@ -16,6 +16,16 @@ app.get("/", function(req, res, next) {
 });
 
 app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async (request, response) => {
+  const signature = request.headers["x-signature-ed25519"];
+  const timestamp = request.headers["x-signature-timestamp"];
+  const rawBody = await getRawBody(request);
+
+  console.log(signature, timestamp, process.env.PUBLIC_KEY);
+
+  const isValidRequest = verifyKey(rawBody, signature, timestamp, process.env.PUBLIC_KEY);
+
+  if (!isValidRequest) return response.status(401).send({ error: "Bad request signature " });
+
   const message = request.body;
 
   if (message.type === InteractionType.PING) {
