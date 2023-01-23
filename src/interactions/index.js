@@ -25,34 +25,36 @@ app.post('/', async (request, response) => {
 
   const message = request.body || {};
 
-  for(key in request) console.log(key, request[key]);
+  try {
+    for(const key in request) console.log(key, request[key]);
 
-  if (message.type === InteractionType.PING) {
-    response.send({ type: InteractionResponseType.PONG });
-  }
-  else if (message.type === InteractionType.APPLICATION_COMMAND) {
-    console.log('APPLICATION_COMMAND', message);
-
-    const commandFunc = cmdList[message.data.name]?.[1];
-
-    if(!commandFunc) return response.status(200).send({ content: "Unknown Command" });
-
-    try {
-      return commandFunc(message, response);
-    } catch(e) {
-      return response.status(200).send({ content: e.message });
+    if (message.type === InteractionType.PING) {
+      response.send({ type: InteractionResponseType.PONG });
     }
-  } 
-  else if(message.type === InteractionType.APPLICATION_MODAL_SUBMIT) {
-    console.log('APPLICATION_MODAL_SUBMIT', message);
-    const result =response.status(200).send({
-      type: 4,
-      data: { content: 'OK', flags: 64 }
-    });
-    return console.log(result.res);
-  }
-  else {
-    console.log('?', message);
-    response.status(200).send({ content: "Unknown Type" });
-  }
+    else if (message.type === InteractionType.APPLICATION_COMMAND) {
+      console.log('APPLICATION_COMMAND', message);
+
+      const commandFunc = cmdList[message.data.name]?.[1];
+
+      if(!commandFunc) return response.status(200).send({ content: "Unknown Command" });
+
+      try {
+        return commandFunc(message, response);
+      } catch(e) {
+        return response.status(200).send({ content: e.message });
+      }
+    } 
+    else if(message.type === InteractionType.APPLICATION_MODAL_SUBMIT) {
+      console.log('APPLICATION_MODAL_SUBMIT', message);
+      const result =response.status(200).send({
+        type: 4,
+        data: { content: 'OK', flags: 64 }
+      });
+      return console.log(result.res);
+    }
+    else {
+      console.log('?', message);
+      response.status(200).send({ content: "Unknown Type" });
+    }
+  } catch {}
 });
