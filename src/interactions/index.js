@@ -1,4 +1,4 @@
-import { InteractionResponseType, InteractionType, verifyKey } from 'discord-interactions';
+import { InteractionResponseType, InteractionType, verifyKeyMiddleware } from 'discord-interactions';
 import getRawBody from 'raw-body';
 import cmdList from './commands.js';
 import express from 'express';
