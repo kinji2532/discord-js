@@ -25,7 +25,7 @@ app.post('/', async (request, response) => {
 
   const message = request.body;
 
-  console.log(message);
+  console.log(Object.keys(request));
 
   if (message.type === InteractionType.PING) {
     response.send({ type: InteractionResponseType.PONG });
