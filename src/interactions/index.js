@@ -15,14 +15,14 @@ app.get("/", function(req, res, next) {
   res.send(param);
 });
 
-app.post('/', async (request, response, next) => {
+app.post('/', async (request, response) => {
   const signature = request.headers["x-signature-ed25519"];
   const timestamp = request.headers["x-signature-timestamp"];
   const rawBody = await getRawBody(request);
 
-  console.log(signature, timestamp, process.env.PUBLIC_KEY);
-
   const isValidRequest = verifyKey(rawBody, signature, timestamp, process.env.PUBLIC_KEY);
+
+  console.log(isValidRequest);
 
   if (!isValidRequest) return response.status(401).send({ error: "Bad request signature " });
 
@@ -56,5 +56,4 @@ app.post('/', async (request, response, next) => {
     console.log('?', message);
     response.status(200).send({ content: "Unknown Type" });
   }
-  next();
 });
