@@ -21,9 +21,9 @@ app.post("/", async (request, response) => {
   const timestamp = request.headers["x-signature-timestamp"];
   const rawBody = await getRawBody(request);
 
-  console.log(rawBody, signature, timestamp, process.env.PUBLIC_KEY);
-
   const isValidRequest = verifyKey(rawBody, signature, timestamp, process.env.PUBLIC_KEY);
+
+  console.log(isValidRequest);
 
   if (!isValidRequest) return response.status(401).send({ error: "Bad request signature " });
 
