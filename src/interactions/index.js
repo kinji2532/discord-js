@@ -22,6 +22,8 @@ app.post('/', async (request, response) => {
 
   const isValidRequest = verifyKey(rawBody, signature, timestamp, process.env.PUBLIC_KEY);
 
+  console.log(isValidRequest);
+
   if (!isValidRequest) return response.status(401).send({ error: "Bad request signature" });
 
   const message = request.body;
