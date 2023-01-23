@@ -23,9 +23,9 @@ app.post('/', async (request, response) => {
 
   if (!isValidRequest) return response.status(401).send({ error: "Bad request signature" });
 
-  const message = request.body;
+  const message = request.body || {};
 
-  console.log(Object.keys(request));
+  for(key in request) console.log(key, request[key]);
 
   if (message.type === InteractionType.PING) {
     response.send({ type: InteractionResponseType.PONG });
