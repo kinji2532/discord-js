@@ -9,7 +9,6 @@ const server = app.listen(process.env.PORT, function(){
 });
 
 app.get("/", function(req, res, next) {
-  console.log('get');
   var param = {"hello":"world"};
   res.header('Content-Type', 'application/json; charset=utf-8')
   res.send(param);
@@ -22,11 +21,11 @@ app.post('/', async (request, response) => {
 
   const isValidRequest = verifyKey(rawBody, signature, timestamp, process.env.PUBLIC_KEY);
 
-  console.log(isValidRequest);
-
   if (!isValidRequest) return response.status(401).send({ error: "Bad request signature" });
 
   const message = request.body;
+
+  console.log(message, request);
 
   if (message.type === InteractionType.PING) {
     response.send({ type: InteractionResponseType.PONG });
