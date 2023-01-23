@@ -12,22 +12,20 @@ export class Interaction {
     for(const key in m) this[key] = m[key];
   };
   async reply(data) {
-    const result = await fetch(`${url}/interactions/${this.id}/${this.token}/callback`, {
+    await fetch(`${url}/interactions/${this.id}/${this.token}/callback`, {
       headers,
       method: "POST",
       body: JSON.stringify({ type: 4, data })
     });
-    console.log(await result.json());
   };
   async editReply(data) {
-    const result = await fetch(`${url}/webhooks/${this.application_id}/${this.token}/messages/@original`, {
+    await fetch(`${url}/webhooks/${this.application_id}/${this.token}/messages/@original`, {
       headers,
       method: "PATCH",
       body: JSON.stringify({ type: 4, data })
     });
-    console.log(await result.json());
-  }
-}
+  };
+};
 
 
 export async function sendMessage(content, id = '599272915153715201', type = 'BOT') {
