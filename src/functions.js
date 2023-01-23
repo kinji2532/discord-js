@@ -17,7 +17,7 @@ export class Interaction {
       method: "POST",
       body: JSON.stringify({ type: 4, data })
     });
-    return new Interaction(await result.json());
+    console.log(await result.json());
   };
   async editReply(data) {
     const result = await fetch(`${url}/webhooks/${this.application_id}/${this.token}/messages/@original`, {
@@ -25,7 +25,7 @@ export class Interaction {
       method: "PATCH",
       body: JSON.stringify({ type: 4, data })
     });
-    return new Interaction(await result.json());
+    console.log(await result.json());
   }
 }
 
