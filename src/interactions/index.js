@@ -15,7 +15,7 @@ app.get("/", function(req, res, next) {
   res.send(param);
 });
 
-app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async (request, response) => {
+app.post('/', verifyKeyMiddleware(process.env.PUBLIC_KEY), async (request, response, next) => {
   const signature = request.headers["x-signature-ed25519"];
   const timestamp = request.headers["x-signature-timestamp"];
   const rawBody = await getRawBody(request);
@@ -56,4 +56,5 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async (re
     console.log('?', message);
     response.status(200).send({ content: "Unknown Type" });
   }
+  next();
 });
