@@ -2,19 +2,12 @@ import { InteractionResponseType, InteractionType, verifyKey } from 'discord-int
 import getRawBody from 'raw-body';
 import cmdList from './commands.js';
 import express from 'express';
-import bodyParser from 'body-parser';
 
 const app = express();
 
 const server = app.listen(process.env.PORT, function(){
     console.log("[interactions] listening to:", server.address());
 });
-
-app.use(express.json());
-
-app.use(express.urlencoded({
-    extended: true
-}));
 
 app.get("/", function(req, res, next) {
   var param = {"hello":"world"};
@@ -33,7 +26,7 @@ app.post('/', async (request, response) => {
 
   const message = request.body || {};
 
-  console.log(message);
+  console.log(request);
 
   if (message.type === InteractionType.PING) {
     response.send({ type: InteractionResponseType.PONG });
@@ -62,5 +55,18 @@ app.post('/', async (request, response) => {
   else {
     console.log('?', message);
     response.status(200).send({ content: "Unknown Type" });
+  }
+});
+
+app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), (req, res) => {
+  const message = req.body;
+  console.log(message);
+  if (message.type === InteractionType.APPLICATION_COMMAND) {
+    res.send({
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      data: {
+        content: 'Hello world',
+      },
+    });
   }
 });
