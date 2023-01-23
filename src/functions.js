@@ -1,6 +1,34 @@
 import fetch from 'node-fetch';
 
 const url = 'https://discord.com/api/v10';
+const headers = { 
+  "Content-Type": "application/json",
+  "Authorization": 'Bot ' + process.env.BOT_TOKEN
+};
+
+
+export class Interaction {
+  constructor(m) {
+    for(const key in m) this[key] = m[key];
+  };
+  async reply(data) {
+    const result = await fetch(`${url}/interactions/${this.id}/${this.token}/callback`, {
+      headers,
+      method: "POST",
+      body: JSON.stringify({ type: 4, data })
+    });
+    return new Interaction(await result.json());
+  };
+  async editReply(data) {
+    const result = await fetch(`${url}/webhooks/${this.application_id}/${this.token}/messages/@original`, {
+      headers,
+      method: "PATCH",
+      body: JSON.stringify({ type: 4, data })
+    });
+    return new Interaction(await result.json());
+  }
+}
+
 
 export async function sendMessage(content, id = '599272915153715201', type = 'BOT') {
   const data = typeof content === 'string' ? ({ content }):content;

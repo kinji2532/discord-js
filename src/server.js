@@ -1,14 +1,13 @@
 import { InteractionResponseType, InteractionType, verifyKey } from 'discord-interactions';
 import { event } from './init.js';
+import { Interaction } from './functions.js';
 import getRawBody from 'raw-body';
 import express from 'express';
 
 
 const app = express();
 
-const server = app.listen(process.env.PORT, () => {
-  console.log("[interactions] listening to:", server.address());
-});
+app.listen(process.env.PORT, () => {});
 
 app.post('/', async (request, response) => {
   const signature = request.headers["x-signature-ed25519"];
@@ -26,10 +25,10 @@ app.post('/', async (request, response) => {
       response.send({ type: InteractionResponseType.PONG });
       break;
     case InteractionType.APPLICATION_COMMAND:
-      event.emit('application_command', message, response);
+      event.emit('application_command', new Interaction(message));
       break;
     case InteractionType.APPLICATION_MODAL_SUBMIT:
-      event.emit('application_modal_submit', message, response);
+      event.emit('application_modal_submit', new Interaction(message));
       break;
   }
 });

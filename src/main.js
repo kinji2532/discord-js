@@ -76,7 +76,7 @@ event.on('message_reaction_add', async react => {
   deleteMessage(message.channel_id, message.id);
 });
 
-event.on('application_command', async (message, response) => {
-  console.log(message);
-  response.send({ content: 'OK' });
+event.on('application_command', async interaction => {
+  console.log(interaction);
+  interaction.reply({ content: 'ok' });
 });
