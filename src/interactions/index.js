@@ -24,7 +24,7 @@ app.post('/', async (request, response) => {
 
   if (!isValidRequest) return response.status(401).send({ error: "Bad request signature" });
 
-  const message = request.body || {};
+  const message = JSON.parse(rawBody.toString('utf-8')) || {};
 
   console.log('a', message);
 
