@@ -10,11 +10,11 @@ const server = app.listen(process.env.PORT, function(){
     console.log("[interactions] listening to:", server.address());
 });
 
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
+app.use(express.json());
 
-app.use(bodyParser.json());
+app.use(express.urlencoded({
+    extended: true
+}));
 
 app.get("/", function(req, res, next) {
   var param = {"hello":"world"};
@@ -33,6 +33,7 @@ app.post('/', async (request, response) => {
 
   const message = request.body || {};
 
+  console.log(message);
 
   if (message.type === InteractionType.PING) {
     response.send({ type: InteractionResponseType.PONG });
