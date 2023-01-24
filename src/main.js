@@ -2,7 +2,7 @@ import { event, reconnect } from './init.js';
 import {
   getGuild, getChannel, getMessage, getReaction,
   sendMessage, addReaction, setTyping, deleteMessage,
-  hasGuildMember, messageUrl, sleep
+  hasGuildMember, messageUrl, sleep, Interaction
 } from './functions.js';
 
 event.once('ready', async d => {
@@ -76,8 +76,12 @@ event.on('message_reaction_add', async react => {
   deleteMessage(message.channel_id, message.id);
 });
 
-event.on('application_command', async interaction => {
+event.on('application_command',
+/** @param { Interaction } interaction */
+async interaction => {
   interaction.reply({ content: 'ok' });
   await sleep(3000);
   interaction.editReply({ content: 'okk' });
+  await sleep(3000);
+  interaction.deleteReply();
 });

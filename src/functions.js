@@ -1,5 +1,8 @@
 import fetch from 'node-fetch';
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 const url = 'https://discord.com/api/v10';
 const headers = { 
   "Content-Type": "application/json",
@@ -17,6 +20,14 @@ export class Interaction {
       method: "POST",
       body: JSON.stringify({ type: 4, data })
     });
+    return await this.getReply();
+  };
+  async getReply() {
+    const result = await fetch(`${url}/webhooks/${this.application_id}/${this.token}/messages/@original`, {
+      headers,
+      method: "GET"
+    });
+    return new Interaction(await result.json());
   };
   async editReply(data) {
     await fetch(`${url}/webhooks/${this.application_id}/${this.token}/messages/@original`, {
@@ -24,6 +35,24 @@ export class Interaction {
       method: "PATCH",
       body: JSON.stringify(data)
     });
+  };
+  async deleteReply() {
+    await fetch(`${url}/webhooks/${this.application_id}/${this.token}/messages/@original`, {
+      headers,
+      method: "DELETE"
+    });
+  };
+  static async set(data, guild_id) {
+    const result = await fetch(`${url}/applications/${process.env.APPLICATION_ID}/guilds/${guild_id}/commands`, {
+      headers,
+      method: "PUT",
+      body: JSON.stringify(data)
+    });
+    if (result.ok) return true;
+    else {
+      const text = await result.text();
+      return text;
+    }
   };
 };
 
