@@ -122,7 +122,7 @@ async interaction => {
       return interaction.reply({ content: `${key.value}に${values.value}を登録しました` });
     }
   } else {
-    console.log(interaction);
+    console.log(interaction.data);
     interaction.reply({ content: 'ok' });
     await sleep(3000);
     interaction.editReply({ content: 'okk' });
