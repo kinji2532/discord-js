@@ -45,9 +45,8 @@ event.on('message_create', async message => {
   }
   try{
     const list = await reply.load();
-    console.log(list);
     if(!list) return sendMessage("reply error", '1053457173314801686');
-    const select = list.find(data => data.key.includes(message.content));
+    const select = list.find(data => data.key === message.content);
     if(select) {
       if(Math.floor(Math.random() * 3) !== 0) return;
       sendMessage("call to send", '1053457173314801686');
