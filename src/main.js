@@ -92,10 +92,8 @@ event.on('application_command',
 async interaction => {
   const { data } = interaction;
   if(data.name === 'reply') {
-    interaction.reply({ content: 'ok' });
-    interaction.deleteReply();
     const json = await reply.load();
-    const [ sub ] = data.options, [ key, values ] = data.options;
+    const [ sub ] = data.options, [ key, values ] = sub.options;
     for(const i in json) {
       if(json[i].key === key.value) {
         if(sub.name === 'add') {
