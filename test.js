@@ -11,7 +11,7 @@ async function test() {
   list.forEach(async id => {
     console.log(await Interaction.set([
       {
-        name: "test",
+        name: "reply",
         type: 1,
         description: "this is test",
         options: [

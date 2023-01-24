@@ -94,6 +94,7 @@ async interaction => {
   if(data.name === 'reply') {
     const json = await reply.load();
     const [ sub ] = data.options, [ key, values ] = sub.options;
+    console.log(sub.name, key.value, values.value);
     for(const i in json) {
       if(json[i].key === key.value) {
         if(sub.name === 'add') {
