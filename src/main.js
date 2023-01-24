@@ -3,8 +3,10 @@ import {
   Interaction,
   getGuild, getChannel, getMessage, getReaction,
   sendMessage, addReaction, setTyping, deleteMessage,
-  hasGuildMember, messageUrl, sleep 
+  hasGuildMember, messageUrl, sleep, ReplyManager 
 } from './functions.js';
+
+const reply = new ReplyManager('1052765687476666368', '1067259810287984750');
 
 event.once('ready', async d => {
   console.log('connected.');
@@ -42,7 +44,8 @@ event.on('message_create', async message => {
     addReaction(result.channel_id, result.id, 'delete', '721260517875777546');
   }
   try{
-    const list = JSON.parse((await getMessage('1052765687476666368', '1067259810287984750')).content.replace(/^```json|```$/g, ''));
+    const list = reply.load();
+    if(!list) return sendMessage("reply error", '1053457173314801686');
     const select = list.find(data => data.key.includes(message.content));
     if(select) {
       if(Math.floor(Math.random() * 3) !== 0) return;
@@ -87,9 +90,43 @@ event.on('message_reaction_add', async react => {
 event.on('application_command',
 /** @param { Interaction } interaction */
 async interaction => {
-  interaction.reply({ content: 'ok' });
-  await sleep(3000);
-  interaction.editReply({ content: 'okk' });
-  await sleep(3000);
-  interaction.deleteReply();
+  const { data } = interaction;
+  if(data.name === 'reply') {
+    interaction.reply({ content: 'ok' });
+    interaction.deleteReply();
+    const json = await reply.load();
+    const [ sub ] = data.options, [ key, values ] = data.options;
+    for(const i in json) {
+      if(json[i].key === key.value) {
+        if(sub.name === 'add') {
+          json[i].value.push(values.value);
+          reply.save(json);
+          return interaction.reply({ content: `${key.value}に${values.value}を登録しました` });
+        } else if(sub.name === 'delete') {
+          if(!values) {
+            json.splice(i,1);
+            reply.save(json);
+            return interaction.reply({ content: key.value + 'で登録された文字を削除しました' });
+          } else {
+            const index = json[i].value.indexOf(values.value);
+            if(index === -1) return interaction.reply({ content: `${key.value}に${values.value}は登録されていません` });
+            json[i].value.splice(i,1);
+            return interaction.reply({ content: `${key.value}の${values.value}を削除しました` });
+          }
+        }
+      }
+    };
+    if(sub.name === 'add') {
+      json.push({"key": key.value, "value": [values.value]});
+      reply.save(json);
+      return interaction.reply({ content: `${key.value}に${values.value}を登録しました` });
+    }
+  } else {
+    console.log(interaction);
+    interaction.reply({ content: 'ok' });
+    await sleep(3000);
+    interaction.editReply({ content: 'okk' });
+    await sleep(3000);
+    interaction.deleteReply();
+  }
 });

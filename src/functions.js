@@ -56,6 +56,24 @@ export class Interaction {
   };
 };
 
+export class ReplyManager {
+  constructor(message,channel) {
+    this.message_id = message;
+    this.channel_id = channel;
+  };
+  async load() {
+    try {
+      const message = await getMessage(this.channel_id, this.message_id);
+      const json = JSON.parse(message.content.replace(/^```json|```$/g, ''));
+      return json;
+    } catch {
+      return false;
+    }
+  };
+  async save(json) {
+    editMessage(`\`\`\`json\n${JSON.stringify(json)}\n\`\`\``, this.channel_id, this.message_id, 'SELF');
+  };
+};
 
 export async function sendMessage(content, id = '599272915153715201', type = 'BOT') {
   const data = typeof content === 'string' ? ({ content }):content;
@@ -132,6 +150,19 @@ export async function getReaction(guild_id, emoji_id, type = 'BOT') {
       "Authorization": type === 'BOT' ? 'Bot '+process.env.BOT_TOKEN : process.env.SELF_TOKEN
     },
     method: "GET"
+  });
+  return await result.json();
+};
+
+export async function editMessage(content, message_id, channel_id, type = 'BOT') {
+  const data = typeof content === 'string' ? ({ content }):content;
+  const result = await fetch(`${url}/channels/${channel_id}/messages/${message_id}`, {
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": type === 'BOT' ? 'Bot '+process.env.BOT_TOKEN : process.env.SELF_TOKEN
+    },
+    method: "PATCH",
+    body: JSON.stringify(data)
   });
   return await result.json();
 };
