@@ -48,7 +48,7 @@ event.on('message_create', async message => {
     if(!list) return sendMessage("reply error", '1053457173314801686');
     const select = list.find(data => data.key === message.content);
     if(select) {
-      if(Math.floor(Math.random() * 3) !== 0) return;
+      if(Math.floor(Math.random() * select.weight||1) !== 0) return;
       sendMessage("call to send", '1053457173314801686');
       const type = hasGuildMember(message.guild_id, '506254167325671424') ? 'BOT' : 'SELF';
       if(type === 'SELF' && message.author.id === '395010195090178058') return;
