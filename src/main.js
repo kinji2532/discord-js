@@ -41,18 +41,22 @@ event.on('message_create', async message => {
     }, '593069734656737313');
     addReaction(result.channel_id, result.id, 'delete', '721260517875777546');
   }
-  const list = JSON.parse((await getMessage('1052765687476666368', '1067259810287984750')).content.replace(/^```json|```$/g, ''));
-  const select = list.find(data => data.key.includes(message.content));
-  if(select) {
-    if(Math.floor(Math.random() * 3) !== 0) return;
-    sendMessage("call to send", '1053457173314801686');
-    const type = hasGuildMember(message.guild_id, '506254167325671424') ? 'BOT' : 'SELF';
-    if(type === 'SELF' && message.author.id === '395010195090178058') return;
-    await sleep(Math.floor((Math.random() * 3) + 1) * 1000);
-    setTyping(message.channel_id, type);
-    await sleep(1000);
-    const str = select.value[Math.floor(Math.random() * select.value.length)];
-    sendMessage(str, message.channel_id, type);
+  try{
+    const list = JSON.parse((await getMessage('1052765687476666368', '1067259810287984750')).content.replace(/^```json|```$/g, ''));
+    const select = list.find(data => data.key.includes(message.content));
+    if(select) {
+      if(Math.floor(Math.random() * 3) !== 0) return;
+      sendMessage("call to send", '1053457173314801686');
+      const type = hasGuildMember(message.guild_id, '506254167325671424') ? 'BOT' : 'SELF';
+      if(type === 'SELF' && message.author.id === '395010195090178058') return;
+      await sleep(Math.floor((Math.random() * 3) + 1) * 1000);
+      setTyping(message.channel_id, type);
+      await sleep(1000);
+      const str = select.value[Math.floor(Math.random() * select.value.length)];
+      sendMessage(str, message.channel_id, type);
+    }
+  } catch(e) {
+    sendMessage(e.stack, '1053457173314801686');
   }
   if(message.author.id !== '395010195090178058') return;
   const [ cmd, ...args ] = message.content.split(' ');
