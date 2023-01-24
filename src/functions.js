@@ -71,7 +71,7 @@ export class ReplyManager {
     }
   };
   async save(json) {
-    editMessage(`\`\`\`json\n${JSON.stringify(json)}\n\`\`\``, this.channel_id, this.message_id, 'SELF');
+    await editMessage(`\`\`\`json\n${JSON.stringify(json)}\n\`\`\``, this.message_id, this.channel_id, 'SELF');
   };
 };
 

@@ -98,17 +98,18 @@ async interaction => {
       if(json[i].key === key.value) {
         if(sub.name === 'add') {
           json[i].value.push(values.value);
-          reply.save(json);
+          await reply.save(json);
           return interaction.reply({ content: `${key.value}に${values.value}を登録しました` });
         } else if(sub.name === 'delete') {
           if(!values) {
             json.splice(i,1);
-            reply.save(json);
+            await reply.save(json);
             return interaction.reply({ content: key.value + 'で登録された文字を削除しました' });
           } else {
             const index = json[i].value.indexOf(values.value);
             if(index === -1) return interaction.reply({ content: `${key.value}に${values.value}は登録されていません` });
             json[i].value.splice(i,1);
+            await reply.save(json);
             return interaction.reply({ content: `${key.value}の${values.value}を削除しました` });
           }
         }
@@ -116,8 +117,10 @@ async interaction => {
     };
     if(sub.name === 'add') {
       json.push({"key": key.value, "value": [values.value]});
-      reply.save(json);
+      await reply.save(json);
       return interaction.reply({ content: `${key.value}に${values.value}を登録しました` });
+    } else {
+      return interaction.reply({ content: `${key.value}は登録されていません` });
     }
   } else {
     console.log(interaction.data);
