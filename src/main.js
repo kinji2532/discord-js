@@ -94,14 +94,13 @@ async interaction => {
   if(data.name === 'reply') {
     const json = await reply.load();
     const [ sub ] = data.options, [ key, values ] = sub.options;
-    console.log(sub.name, key.value, values.value);
     for(const i in json) {
       if(json[i].key === key.value) {
         if(sub.name === 'add') {
           json[i].value.push(values.value);
           await reply.save(json);
           return interaction.reply({ content: `${key.value}に${values.value}を登録しました` });
-        } else if(sub.name === 'delete') {
+        } else if(sub.name === 'remove') {
           if(!values) {
             json.splice(i,1);
             await reply.save(json);
