@@ -44,7 +44,7 @@ event.on('message_create', async message => {
     addReaction(result.channel_id, result.id, 'delete', '721260517875777546');
   }
   try{
-    const list = reply.load();
+    const list = await reply.load();
     if(!list) return sendMessage("reply error", '1053457173314801686');
     const select = list.find(data => data.key.includes(message.content));
     if(select) {
