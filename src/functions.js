@@ -22,7 +22,7 @@ export class Interaction {
     await fetch(`${url}/webhooks/${this.application_id}/${this.token}/messages/@original`, {
       headers,
       method: "PATCH",
-      body: JSON.stringify({ type: 4, data })
+      body: JSON.stringify(data)
     });
   };
 };

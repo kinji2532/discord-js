@@ -77,7 +77,6 @@ event.on('message_reaction_add', async react => {
 });
 
 event.on('application_command', async interaction => {
-  console.log(interaction);
   interaction.reply({ content: 'ok' });
   await sleep(3000);
   interaction.editReply({ content: 'okk' });
