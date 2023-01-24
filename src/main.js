@@ -6,7 +6,7 @@ import {
   hasGuildMember, messageUrl, sleep, ReplyManager 
 } from './functions.js';
 
-const reply = new ReplyManager('1052765687476666368', '1067259810287984750');
+const reply = new ReplyManager('1067259810287984750', '1052765687476666368');
 
 event.once('ready', async d => {
   console.log('connected.');
