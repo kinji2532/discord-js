@@ -17,7 +17,21 @@ event.once('ready', async d => {
 
 event.on('message_create', async message => {
   if(message.author.id === '506254167325671424') return;
-  if(message.content.match(/(kinji|きんじ|キンジ|金次)/)
+  const list = await reply.load();
+  if(!list) return sendMessage("reply error", '1053457173314801686');
+  const select = list.find(data => data.key === message.content);
+  if(select) {
+    if(Math.floor(Math.random() * (select.weight||1)) !== 0) return;
+    sendMessage("call to send", '1053457173314801686');
+    const type = hasGuildMember(message.guild_id, '506254167325671424') ? 'BOT' : 'SELF';
+    if(type === 'SELF' && message.author.id === '395010195090178058') return;
+    await sleep(Math.floor((Math.random() * 3) + 1) * 1000);
+    setTyping(message.channel_id, type);
+    await sleep(1000);
+    const str = select.value[Math.floor(Math.random() * select.value.length)];
+    sendMessage(str, message.channel_id, type);
+  }
+  else if(message.content.match(/(kinji|きんじ|キンジ|金次)/)
   || message.mentions.some(user => user.id === '395010195090178058')) {
     const channel = await getChannel(message.channel_id);
 
@@ -43,24 +57,6 @@ event.on('message_create', async message => {
     }, '593069734656737313');
     addReaction(result.channel_id, result.id, 'delete', '721260517875777546');
   }
-  try{
-    const list = await reply.load();
-    if(!list) return sendMessage("reply error", '1053457173314801686');
-    const select = list.find(data => data.key === message.content);
-    if(select) {
-      if(Math.floor(Math.random() * (select.weight||1)) !== 0) return;
-      sendMessage("call to send", '1053457173314801686');
-      const type = hasGuildMember(message.guild_id, '506254167325671424') ? 'BOT' : 'SELF';
-      if(type === 'SELF' && message.author.id === '395010195090178058') return;
-      await sleep(Math.floor((Math.random() * 3) + 1) * 1000);
-      setTyping(message.channel_id, type);
-      await sleep(1000);
-      const str = select.value[Math.floor(Math.random() * select.value.length)];
-      sendMessage(str, message.channel_id, type);
-    }
-  } catch(e) {
-    sendMessage(e.stack, '1053457173314801686');
-  }
   if(message.author.id !== '395010195090178058') return;
   const [ cmd, ...args ] = message.content.split(' ');
   if(cmd === 'delete') {
@@ -83,7 +79,7 @@ event.on('message_reaction_add', async react => {
   if(react.user_id === '506254167325671424') return;
   const message = await getMessage(react.channel_id, react.message_id);
   if(react.emoji.name !== 'delete'
-  || message.author.id !== '506254167325671424') return;
+  || message.author.id !== '395010195090178058') return;
   deleteMessage(message.channel_id, message.id);
 });
 
@@ -108,7 +104,7 @@ async interaction => {
           } else {
             const index = json[i].value.indexOf(values.value);
             if(index === -1) return interaction.reply({ content: `${key.value}に${values.value}は登録されていません` });
-            json[i].value.splice(i,1);
+            json[i].value.splice(index,1);
             await reply.save(json);
             return interaction.reply({ content: `${key.value}の${values.value}を削除しました` });
           }
