@@ -25,7 +25,7 @@ event.on('message_create', async message => {
     sendMessage("call to send", '1053457173314801686');
     const type = hasGuildMember(message.guild_id, '506254167325671424') ? 'BOT' : 'SELF';
     if(type === 'SELF' && message.author.id === '395010195090178058') return;
-    await sleep(Math.floor((Math.random() * 3) + 1) * 1000);
+    await sleep(Math.floor((Math.random() * select.wait||3)) * 1000);
     setTyping(message.channel_id, type);
     await sleep(1000);
     const str = select.value[Math.floor(Math.random() * select.value.length)];
