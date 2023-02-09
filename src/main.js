@@ -98,7 +98,7 @@ async interaction => {
           await reply.save(json);
           return interaction.reply({ content: `${param.key}に${param.value}を登録しました` });
         } else if(sub.name === 'remove') {
-          if(!values) {
+          if(!param.value) {
             json.splice(i,1);
             await reply.save(json);
             return interaction.reply({ content: param.key + 'で登録された文字を削除しました' });
