@@ -89,34 +89,35 @@ async interaction => {
   const { data } = interaction;
   if(data.name === 'reply') {
     const json = await reply.load();
-    const [ sub ] = data.options, [ key, values ] = sub.options;
+    const [ sub ] = data.options;
+    const param = Object.fromEntries(sub.options.map(data => [data.name, data.value]));
     for(const i in json) {
-      if(json[i].key === key.value) {
+      if(json[i].key === param.key) {
         if(sub.name === 'add') {
-          json[i].value.push(values.value);
+          json[i].value.push(param.value);
           await reply.save(json);
-          return interaction.reply({ content: `${key.value}に${values.value}を登録しました` });
+          return interaction.reply({ content: `${param.key}に${param.value}を登録しました` });
         } else if(sub.name === 'remove') {
           if(!values) {
             json.splice(i,1);
             await reply.save(json);
-            return interaction.reply({ content: key.value + 'で登録された文字を削除しました' });
+            return interaction.reply({ content: param.key + 'で登録された文字を削除しました' });
           } else {
-            const index = json[i].value.indexOf(values.value);
-            if(index === -1) return interaction.reply({ content: `${key.value}に${values.value}は登録されていません` });
+            const index = json[i].value.indexOf(param.value);
+            if(index === -1) return interaction.reply({ content: `${param.key}に${param.value}は登録されていません` });
             json[i].value.splice(index,1);
             await reply.save(json);
-            return interaction.reply({ content: `${key.value}の${values.value}を削除しました` });
+            return interaction.reply({ content: `${param.key}の${param.value}を削除しました` });
           }
         }
       }
     };
     if(sub.name === 'add') {
-      json.push({"key": key.value, "value": [values.value]});
+      json.push({"key": param.key, "value": [param.value]});
       await reply.save(json);
-      return interaction.reply({ content: `${key.value}に${values.value}を登録しました` });
+      return interaction.reply({ content: `${param.key}に${param.value}を登録しました` });
     } else {
-      return interaction.reply({ content: `${key.value}は登録されていません` });
+      return interaction.reply({ content: `${param.key}は登録されていません` });
     }
   } else {
     console.log(interaction.data);
