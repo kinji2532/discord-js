@@ -128,3 +128,7 @@ async interaction => {
     interaction.deleteReply();
   }
 });
+
+process.on('uncaughtException', error => {
+  sendMessage(error.message, '1053457173314801686');
+});
