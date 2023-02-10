@@ -25,7 +25,7 @@ event.on('message_create', async message => {
     sendMessage("call to send", '1053457173314801686');
     const type = hasGuildMember(message.guild_id, '506254167325671424') ? 'BOT' : 'SELF';
     if(type === 'SELF' && message.author.id === '395010195090178058') return;
-    await sleep(Math.floor((Math.random() * select.wait||0)) * 1000);
+    await sleep(Math.floor((Math.random() * select.wait?.min||0)+select.wait?.max||0) * 1000);
     setTyping(message.channel_id, type);
     await sleep(1000);
     const str = select.value[Math.floor(Math.random() * select.value.length)];
@@ -95,6 +95,8 @@ async interaction => {
       if(json[i].key === param.key) {
         if(sub.name === 'add') {
           json[i].value.push(param.value);
+          if(param.weight) json[i].weight = param.weight*1;
+          if(param.minWait || param.maxWait) json[i].wait = { min: param.minWait||param.maxWait, max: param.maxWait||param.minWait };
           await reply.save(json);
           return interaction.reply({ content: `${param.key}に${param.value}を登録しました` });
         } else if(sub.name === 'remove') {
