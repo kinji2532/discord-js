@@ -18,7 +18,7 @@ event.once('ready', async d => {
 event.on('message_create', async message => {
   if(message.author.id === '506254167325671424') return;
   const list = await reply.load();
-  if(!list) return sendMessage("reply error", '1053457173314801686');
+  if(list.error) return sendMessage(`reply error: ${list.error.message}\n${list.error.stack}`, '1053457173314801686');
   const select = list.find(data => data.key === message.content);
   if(select) {
     if(Math.floor(Math.random() * (select.weight||0)) !== 0) return;
