@@ -97,7 +97,6 @@ async interaction => {
       return interaction.reply({ content: `\`\`\`\n${list.join('\n')}\n\`\`\`` });
     }
     const param = Object.fromEntries(sub.options.map(data => [data.name, data.value]));
-    console.log(param);
     for(const i in json) {
       if(json[i].key === param.key) {
         if(sub.name === 'add') {
@@ -123,8 +122,8 @@ async interaction => {
     };
     if(sub.name === 'add') {
       json.push({"key": param.key, "value": [param.value]});
-      if(param.weight) json.slice(-1).weight = Math.max(param.weight, 1);
-      if(param.min_wait || param.max_wait) json.slice(-1).wait = { min: Math.max(param.min_wait||param.max_wait, 0), max: Math.max(param.max_wait||param.min_wait, 0) };
+      if(param.weight) json.slice(-1)[0].weight = Math.max(param.weight, 1);
+      if(param.min_wait || param.max_wait) json.slice(-1)[0].wait = { min: Math.max(param.min_wait||param.max_wait, 0), max: Math.max(param.max_wait||param.min_wait, 0) };
       await reply.save(json);
       return interaction.reply({ content: `${param.key}に${param.value}を登録しました` });
     } else {
