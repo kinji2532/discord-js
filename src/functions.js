@@ -103,7 +103,7 @@ export async function bulkDeleteMessage(ch_id, limit) {
   fetch(`${url}/channels/${ch_id}/messages/bulk-delete`, {
     headers: { 
       "Content-Type": "application/json",
-      "Authorization": type === 'BOT' ? 'Bot '+process.env.BOT_TOKEN : process.env.SELF_TOKEN
+      "Authorization": 'Bot ' + process.env.BOT_TOKEN
     },
     body: JSON.stringify({ messages }),
     method: "DELETE"
