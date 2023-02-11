@@ -111,7 +111,6 @@ export async function bulkDeleteMessage(ch_id, limit) {
     body: JSON.stringify({ messages }),
     method: "POST"
   });
-  console.log(result.statusText);
 };
 
 export async function addReaction(ch_id, msg_id, emoji_name, emoji_id, type = 'BOT') {

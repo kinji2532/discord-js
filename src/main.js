@@ -92,13 +92,17 @@ async interaction => {
   if(data.name === 'reply') {
     const json = await reply.load();
     const [ sub ] = data.options;
+    if(sub.name === 'list') {
+      const list = json.map(data => `・${data.key}\n${data.value}\n確率: ${data.weight||'確定'} 待機時間: ${data.wait ? (data.wait.min||data.wait.max)+'~'+(data.wait.max||data.wait.min):'無し'}`);
+      return interaction.reply({ content: `\`\`\`\n${list.join('\n')}\n\`\`\`` });
+    }
     const param = Object.fromEntries(sub.options.map(data => [data.name, data.value]));
     for(const i in json) {
       if(json[i].key === param.key) {
         if(sub.name === 'add') {
           json[i].value.push(param.value);
-          if(param.weight) json[i].weight = param.weight*1;
-          if(param.minWait || param.maxWait) json[i].wait = { min: param.minWait||param.maxWait, max: param.maxWait||param.minWait };
+          if(param.weight) json[i].weight = Math.min(param.weight, 1);
+          if(param.minWait || param.maxWait) json[i].wait = { min: Math.min(param.minWait||param.maxWait, 0), max: Math.min(param.maxWait||param.minWait, 0) };
           await reply.save(json);
           return interaction.reply({ content: `${param.key}に${param.value}を登録しました` });
         } else if(sub.name === 'remove') {
@@ -113,7 +117,7 @@ async interaction => {
             await reply.save(json);
             return interaction.reply({ content: `${param.key}の${param.value}を削除しました` });
           }
-        }
+        } 
       }
     };
     if(sub.name === 'add') {

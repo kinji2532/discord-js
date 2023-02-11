@@ -39,7 +39,6 @@ function connect() {
       connection.close();
     }
     else if(data.op === 10) {
-      sendMessage('op 10 request', '1053457173314801686');
       const interval = data.d.heartbeat_interval;
       connection.send(JSON.stringify({
         "op": 2,

@@ -13,21 +13,24 @@ async function test() {
       {
         name: "reply",
         type: 1,
-        description: "this is test",
+        description: "返信の管理",
         options: [
           {
             name: 'add',
             type: 1,
-            description: 'sub command',
+            description: '返信を追加',
             options: [
-              { name: 'key', type: 3, description: 'this key', required: true },
-              { name: 'value', type: 3, description: 'this value', required: true }
+              { name: 'key', type: 3, description: '反応させる文字', required: true },
+              { name: 'value', type: 3, description: '応答させる文字', required: true },
+              { name: 'weight', type: 4, description: '応答確率' },
+              { name: 'minWait', type: 4, description: '最小待機時間' },
+              { name: 'maxWait', type: 4, description: '最大待機時間' }
             ]
           },
           {
             name: 'remove',
             type: 1,
-            description: 'sub command',
+            description: '返信を削除',
             options: [
               { name: 'key', type: 3, description: 'this key', required: true },
               { name: 'value', type: 3, description: 'this value' }
