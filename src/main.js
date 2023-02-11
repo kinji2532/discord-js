@@ -97,6 +97,7 @@ async interaction => {
       return interaction.reply({ content: `\`\`\`\n${list.join('\n')}\n\`\`\`` });
     }
     const param = Object.fromEntries(sub.options.map(data => [data.name, data.value]));
+    console.log(param);
     for(const i in json) {
       if(json[i].key === param.key) {
         if(sub.name === 'add') {
