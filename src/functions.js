@@ -98,6 +98,18 @@ export async function deleteMessage(ch_id, msg_id, type = 'BOT') {
   });
 };
 
+export async function bulkDeleteMessage(ch_id, limit) {
+  const messages = (await getMessages(ch_id, limit)).map(message => message.id);
+  fetch(`${url}/channels/${ch_id}/messages/bulk-delete`, {
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": type === 'BOT' ? 'Bot '+process.env.BOT_TOKEN : process.env.SELF_TOKEN
+    },
+    body: JSON.stringify({ messages }),
+    method: "DELETE"
+  });
+};
+
 export async function addReaction(ch_id, msg_id, emoji_name, emoji_id, type = 'BOT') {
   const emoji = encodeURIComponent(`:${emoji_name}:${emoji_id}`);
   fetch(
@@ -126,6 +138,17 @@ export async function getChannel(id) {
     headers: { 
       "Content-Type": "application/json",
       "Authorization": process.env.SELF_TOKEN
+    },
+    method: "GET"
+  });
+  return await result.json();
+};
+
+export async function getMessages(ch_id, limit) {
+  const result = await fetch(`${url}/channels/${ch_id}/messages?limit=${limit}`, {
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": 'Bot ' + process.env.BOT_TOKEN
     },
     method: "GET"
   });

@@ -2,7 +2,8 @@ import { event, reconnect } from './init.js';
 import {
   Interaction,
   getGuild, getChannel, getMessage, getReaction,
-  sendMessage, addReaction, setTyping, deleteMessage,
+  sendMessage, addReaction, setTyping,
+  deleteMessage, bulkDeleteMessage,
   hasGuildMember, messageUrl, sleep, ReplyManager 
 } from './functions.js';
 
@@ -61,7 +62,8 @@ event.on('message_create', async message => {
   const [ cmd, ...args ] = message.content.split(' ');
   if(cmd === 'delete') {
     deleteMessage(message.channel_id, message.id, 'SELF');
-    args.forEach(msg_id => deleteMessage(message.channel_id, msg_id));
+    if(args[0] === 'count') bulkDeleteMessage(message.channel_id, args[1]);
+    else args.forEach(msg_id => deleteMessage(message.channel_id, msg_id));
   }
   else if(cmd === 'send') {
     let result;
