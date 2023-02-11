@@ -1,7 +1,7 @@
 import { Interaction } from './src/functions.js';
 
 const list = [
-//  '919862408837730345',
+  '919862408837730345',
   '506072711815233536'
 ]
 
@@ -23,8 +23,8 @@ async function test() {
               { name: 'key', type: 3, description: '反応させる文字', required: true },
               { name: 'value', type: 3, description: '応答させる文字', required: true },
               { name: 'weight', type: 4, description: '応答確率' },
-              { name: 'minWait', type: 4, description: '最小待機時間' },
-              { name: 'maxWait', type: 4, description: '最大待機時間' }
+              { name: 'min_wait', type: 4, description: '最小待機時間' },
+              { name: 'max_wait', type: 4, description: '最大待機時間' }
             ]
           },
           {
@@ -35,6 +35,11 @@ async function test() {
               { name: 'key', type: 3, description: 'this key', required: true },
               { name: 'value', type: 3, description: 'this value' }
             ]
+          },
+          {
+            name: 'list',
+            type: 1,
+            description: '登録されている返信'
           }
         ]
       }
