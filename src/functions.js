@@ -99,15 +99,19 @@ export async function deleteMessage(ch_id, msg_id, type = 'BOT') {
 };
 
 export async function bulkDeleteMessage(ch_id, limit) {
-  const messages = (await getMessages(ch_id, limit)).map(message => message.id);
-  fetch(`${url}/channels/${ch_id}/messages/bulk-delete`, {
+  const messages = (await getMessages(ch_id, Math.min(limit, 100)))?.map(message => message.id);
+
+  if(!messages) return;
+
+  const result = await fetch(`${url}/channels/${ch_id}/messages/bulk-delete`, {
     headers: { 
       "Content-Type": "application/json",
       "Authorization": 'Bot ' + process.env.BOT_TOKEN
     },
     body: JSON.stringify({ messages }),
-    method: "DELETE"
+    method: "POST"
   });
+  console.log(result.statusText);
 };
 
 export async function addReaction(ch_id, msg_id, emoji_name, emoji_id, type = 'BOT') {
