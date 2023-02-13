@@ -89,13 +89,14 @@ export async function sendMessage(content, id = '599272915153715201', type = 'BO
 };
 
 export async function deleteMessage(ch_id, msg_id, type = 'BOT') {
-  fetch(`${url}/channels/${ch_id}/messages/${msg_id}`, {
+  const result = await fetch(`${url}/channels/${ch_id}/messages/${msg_id}`, {
     headers: { 
       "Content-Type": "application/json",
       "Authorization": type === 'BOT' ? 'Bot '+process.env.BOT_TOKEN : process.env.SELF_TOKEN
     },
     method: "DELETE"
   });
+  return { code: result.status, text: result.statusText };
 };
 
 export async function bulkDeleteMessage(ch_id, limit) {
