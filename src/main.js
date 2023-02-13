@@ -78,6 +78,7 @@ event.on('message_create', async message => {
 });
 
 event.on('message_reaction_add', async react => {
+  console.log(react);
   if(react.user_id === '506254167325671424') return;
   const message = await getMessage(react.channel_id, react.message_id);
   if(react.emoji.name !== 'delete'
