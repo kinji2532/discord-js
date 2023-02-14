@@ -7,7 +7,6 @@ import {
   hasGuildMember, messageUrl, sleep, ReplyManager 
 } from './functions.js';
 import { inspect } from 'util';
-import { int } from 'prismarine-nbt';
 
 const reply = new ReplyManager('1067259810287984750', '1052765687476666368');
 
