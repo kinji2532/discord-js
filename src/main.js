@@ -95,7 +95,7 @@ async interaction => {
       const list = json.map(data => {
         return {
           "name": data.key,
-          "value": `${data.value.join(', ')}\n確率: ${data.weight > 1 ? '1/'+data.weight:'確定'}\n待機: ${data.wait ? data.wait.min+'~'+data.wait.max+'秒':'無し'}`,
+          "value": `>>> ${data.value.join(', ')}\n確率: ${data.weight > 1 ? '1/'+data.weight:'確定'}\n待機: ${data.wait ? data.wait.min+'~'+data.wait.max+'秒':'無し'}`,
           "inline": true
         }
       }).slice(0, 25);
