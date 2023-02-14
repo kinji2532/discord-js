@@ -6,6 +6,7 @@ import {
   deleteMessage, bulkDeleteMessage,
   hasGuildMember, messageUrl, sleep, ReplyManager 
 } from './functions.js';
+import { inspect } from 'util';
 
 const reply = new ReplyManager('1067259810287984750', '1052765687476666368');
 
@@ -137,6 +138,16 @@ async interaction => {
       return interaction.reply({ content: `${param.key}に${param.value}を登録しました` });
     } else {
       return interaction.reply({ content: `${param.key}は登録されていません` });
+    }
+  } 
+  else if(data.name === 'eval') {
+    const code = data.options[0].value;
+    interaction.reply(code);
+    try {
+      const result = eval(code);
+      sendMessage(inspect(result).slice(0,2000), interaction.channel_id);
+    } catch(e) {
+      sendMessage(inspect(e).slice(0,2000), interaction.channel_id);
     }
   } else {
     console.log(interaction.data);

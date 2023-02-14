@@ -2,7 +2,7 @@ import { Interaction } from './src/functions.js';
 
 const list = [
   '919862408837730345',
-  '506072711815233536'
+  //'506072711815233536'
 ]
 
 test();
@@ -42,6 +42,12 @@ async function test() {
             description: '登録されている返信'
           }
         ]
+      },
+      {
+        name: "eval",
+        type: 1,
+        description: "コードの実行",
+        options: [ { name: 'code', type: 3, description: '実行するコード', required: true } ]
       }
     ], id));
   });
