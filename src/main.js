@@ -163,7 +163,7 @@ async interaction => {
   interaction.send({
     type: 8,
     data: {
-      choices: interaction.data.options.map(data => ({ name: `${data.key}_${data.value}`, value: 'ok' }))
+      choices: interaction.data.options.map(data => ({ name: `${data.name}_${data.value}`, value: 'ok' }))
     }
   });
 });

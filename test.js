@@ -54,7 +54,11 @@ async function test() {
         type: 1,
         description: "test",
         options: [
-          { name: 'sample', type: 3, description: 'test', required: true },
+          { name: 'test_1', type: 3, description: 'test' },
+          { name: 'test_2', type: 3, description: 'test' },
+          { name: 'test_3', type: 3, description: 'test' },
+          { name: 'test_4', type: 3, description: 'test' },
+          { name: 'test_5', type: 3, description: 'test' },
           { name: 'data', type: 3, description: 'test', autocomplete: true }
         ]
       }
