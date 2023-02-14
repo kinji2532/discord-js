@@ -76,7 +76,7 @@ export class ReplyManager {
   async load() {
     try {
       const message = await getMessage(this.channel_id, this.message_id);
-      const json = JSON.parse(message.content.replace(/^```json|```$/g, ''));
+      const json = JSON.parse(message.content?.replace(/^```json|```$/g, '')||'[]');
       return json;
     } catch(e) {
       return { error: e };

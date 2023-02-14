@@ -160,13 +160,12 @@ event.on('application_command', async interaction => {
 event.on('application_command_autocomplete', 
 /** @param { Interaction } interaction */
 async interaction => {
-  const result = await interaction.send({
+  const param = Object.fromEntries(interaction.data.options.map(data => [data.name, data.value]));
+  interaction.send({
     type: 8,
     data: {
       choices: [
-        { name: 'a', value: 'a' },
-        { name: 'b', value: 'b' },
-        { name: 'c', value: 'c' }
+        { name: param.sample + '', value: 'a' }
       ]
     }
   });

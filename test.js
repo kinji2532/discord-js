@@ -53,7 +53,10 @@ async function test() {
         name: "test",
         type: 1,
         description: "test",
-        options: [ { name: 'data', type: 3, description: 'test', autocomplete: true } ]
+        options: [
+          { name: 'sample', type: 3, description: 'test', required: true },
+          { name: 'data', type: 3, description: 'test', autocomplete: true }
+        ]
       }
     ], id));
   });
