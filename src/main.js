@@ -161,6 +161,7 @@ event.on('application_command_autocomplete',
 /** @param { Interaction } interaction */
 async interaction => {
   const param = Object.fromEntries(interaction.data.options.map(data => [data.name, data.value]));
+  sendMessage(inspect(interaction.data), interaction.channel_id);
   interaction.send({
     type: 8,
     data: {
