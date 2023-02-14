@@ -92,8 +92,18 @@ async interaction => {
     const json = await reply.load();
     const [ sub ] = data.options;
     if(sub.name === 'list') {
-      const list = json.map(data => `・${data.key}\n${data.value}\n確率: ${data.weight||'確定'} 待機時間: ${data.wait ? (data.wait.min||data.wait.max)+'~'+(data.wait.max||data.wait.min):'無し'}`);
-      return interaction.reply({ content: `\`\`\`\n${list.join('\n')}\n\`\`\`` });
+      const list = json.map(data => {
+        return {
+          "name": data.key,
+          "value": `${data.value.join(', ')}\n確率: ${data.weight > 1 ? '1/'+data.weight:'確定'}\n待機: ${data.wait ? data.wait.min+'~'+data.wait.max+'秒':'無し'}`,
+          "inline": true
+        }
+      }).slice(0, 25);
+      return interaction.reply({ "embeds": [{
+        "title": "reply list",
+        "color": 255,
+        "fields": list
+      }]});
     }
     const param = Object.fromEntries(sub.options.map(data => [data.name, data.value]));
     for(const i in json) {
@@ -101,7 +111,7 @@ async interaction => {
         if(sub.name === 'add') {
           json[i].value.push(param.value);
           if(param.weight) json[i].weight = Math.max(param.weight, 1);
-          if(param.min_wait || param.max_wait) json[i].wait = { min: Math.max(param.min_wait||param.max_wait, 0), max: Math.max(param.max_wait||param.min_wait, 0) };
+          if(param.min_wait || param.max_wait) json[i].wait = { min: Math.max(param.min_wait ?? 0, 0), max: Math.max(param.max_wait ?? param.min_wait, 0) };
           await reply.save(json);
           return interaction.reply({ content: `${param.key}に${param.value}を登録しました` });
         } else if(sub.name === 'remove') {
@@ -122,7 +132,7 @@ async interaction => {
     if(sub.name === 'add') {
       json.push({"key": param.key, "value": [param.value]});
       if(param.weight) json.slice(-1)[0].weight = Math.max(param.weight, 1);
-      if(param.min_wait || param.max_wait) json.slice(-1)[0].wait = { min: Math.max(param.min_wait||param.max_wait, 0), max: Math.max(param.max_wait||param.min_wait, 0) };
+      if(param.min_wait || param.max_wait) json.slice(-1)[0].wait = { min: Math.max(param.min_wait ?? 0, 0), max: Math.max(param.max_wait ?? param.min_wait, 0) };
       await reply.save(json);
       return interaction.reply({ content: `${param.key}に${param.value}を登録しました` });
     } else {
