@@ -60,7 +60,7 @@ export class Interaction {
       method: "POST",
       body: JSON.stringify(data)
     });
-    if (result.ok) return true;
+    if (result.ok) return result.statusText;
     else {
       const text = await result.text();
       return text;

@@ -160,17 +160,17 @@ event.on('application_command', async interaction => {
 event.on('application_command_autocomplete', 
 /** @param { Interaction } interaction */
 async interaction => {
-  console.log(interaction);
-  return Interaction.send({
+  const result = await Interaction.send({
     type: 8,
     data: {
       choices: [
         { name: 'a', value: 'a' },
         { name: 'b', value: 'b' },
-        { name: 'c', value: 'c' },
+        { name: 'c', value: 'c' }
       ]
     }
-  })
+  });
+  console.log(result);
 });
 
 process.on('uncaughtException', error => {
