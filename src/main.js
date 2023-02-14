@@ -142,7 +142,7 @@ async interaction => {
   } 
   else if(data.name === 'eval') {
     const code = data.options[0].value;
-    interaction.reply(code);
+    interaction.reply({ content: code });
     try {
       const result = eval(code);
       sendMessage(inspect(result).slice(0,2000), interaction.channel_id);
