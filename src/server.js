@@ -30,5 +30,7 @@ app.post('/', async (request, response) => {
     case InteractionType.APPLICATION_MODAL_SUBMIT:
       event.emit('application_modal_submit', new Interaction(message));
       break;
+    case InteractionType.APPLICATION_COMMAND_AUTOCOMPLETE:
+      event.emit('application_command_autocomplete', new Interaction(message));
   }
 });

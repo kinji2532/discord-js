@@ -54,6 +54,18 @@ export class Interaction {
       return text;
     }
   };
+  static async send(data) {
+    const result = await fetch(`${url}/interactions/${this.id}/${this.token}/callback`, {
+      headers,
+      method: "POST",
+      body: JSON.stringify(data)
+    });
+    if (result.ok) return true;
+    else {
+      const text = await result.text();
+      return text;
+    }
+  }
 };
 
 export class ReplyManager {

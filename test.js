@@ -2,7 +2,7 @@ import { Interaction } from './src/functions.js';
 
 const list = [
   '919862408837730345',
-  //'506072711815233536'
+  '506072711815233536'
 ]
 
 test();
@@ -48,6 +48,12 @@ async function test() {
         type: 1,
         description: "コードの実行",
         options: [ { name: 'code', type: 3, description: '実行するコード', required: true } ]
+      },
+      {
+        name: "test",
+        type: 1,
+        description: "test",
+        options: [ { name: 'data', type: 3, description: 'test', autocomplete: true } ]
       }
     ], id));
   });

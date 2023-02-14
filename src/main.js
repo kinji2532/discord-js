@@ -85,9 +85,7 @@ event.on('message_reaction_add', async react => {
   deleteMessage(message.channel_id, message.id);
 });
 
-event.on('application_command',
-/** @param { Interaction } interaction */
-async interaction => {
+event.on('application_command', async interaction => {
   const { data } = interaction;
   if(data.name === 'reply') {
     const json = await reply.load();
@@ -157,6 +155,22 @@ async interaction => {
     await sleep(3000);
     interaction.deleteReply();
   }
+});
+
+event.on('application_command_autocomplete', 
+/** @param { Interaction } interaction */
+async interaction => {
+  console.log(interaction);
+  return Interaction.send({
+    type: 8,
+    data: {
+      choices: [
+        { name: 'a', value: 'a' },
+        { name: 'b', value: 'b' },
+        { name: 'c', value: 'c' },
+      ]
+    }
+  })
 });
 
 process.on('uncaughtException', error => {
