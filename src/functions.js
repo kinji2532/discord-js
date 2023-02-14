@@ -42,6 +42,18 @@ export class Interaction {
       method: "DELETE"
     });
   };
+  async send(data) {
+    const result = await fetch(`${url}/interactions/${this.id}/${this.token}/callback`, {
+      headers,
+      method: "POST",
+      body: JSON.stringify(data)
+    });
+    if (result.ok) return result.statusText;
+    else {
+      const text = await result.text();
+      return text;
+    }
+  };
   static async set(data, guild_id) {
     const result = await fetch(`${url}/applications/${process.env.APPLICATION_ID}/guilds/${guild_id}/commands`, {
       headers,
@@ -54,18 +66,6 @@ export class Interaction {
       return text;
     }
   };
-  static async send(data) {
-    const result = await fetch(`${url}/interactions/${this.id}/${this.token}/callback`, {
-      headers,
-      method: "POST",
-      body: JSON.stringify(data)
-    });
-    if (result.ok) return result.statusText;
-    else {
-      const text = await result.text();
-      return text;
-    }
-  }
 };
 
 export class ReplyManager {

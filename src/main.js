@@ -160,7 +160,7 @@ event.on('application_command', async interaction => {
 event.on('application_command_autocomplete', 
 /** @param { Interaction } interaction */
 async interaction => {
-  const result = await Interaction.send({
+  const result = await interaction.send({
     type: 8,
     data: {
       choices: [
@@ -170,7 +170,6 @@ async interaction => {
       ]
     }
   });
-  console.log(result);
 });
 
 process.on('uncaughtException', error => {
