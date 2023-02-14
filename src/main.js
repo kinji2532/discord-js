@@ -7,6 +7,7 @@ import {
   hasGuildMember, messageUrl, sleep, ReplyManager 
 } from './functions.js';
 import { inspect } from 'util';
+import { int } from 'prismarine-nbt';
 
 const reply = new ReplyManager('1067259810287984750', '1052765687476666368');
 
@@ -158,14 +159,18 @@ event.on('application_command', async interaction => {
 });
 
 event.on('application_command_autocomplete', 
-/** @param { Interaction } interaction */
 async interaction => {
-  interaction.send({
-    type: 8,
-    data: {
+  const { data } = interaction;
+  if(data.name === 'reply') {
+    const list = await reply.load();
+    interaction.send({ type: 8, data: {
+      choices: list.map(data => ({ name: data.key, value: data.key }))
+    }});
+  } else if(data.name === 'test') {
+    interaction.send({ type: 8, data: {
       choices: interaction.data.options.map(data => ({ name: `${data.name}_${data.value}`, value: 'ok' }))
-    }
-  });
+    }});
+  }
 });
 
 process.on('uncaughtException', error => {

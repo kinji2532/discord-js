@@ -32,7 +32,7 @@ async function test() {
             type: 1,
             description: '返信を削除',
             options: [
-              { name: 'key', type: 3, description: 'this key', required: true },
+              { name: 'key', type: 3, description: 'this key', required: true, autocomplete: true },
               { name: 'value', type: 3, description: 'this value' }
             ]
           },
