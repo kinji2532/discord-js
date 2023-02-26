@@ -99,6 +99,7 @@ event.on('application_command', async interaction => {
   const { data } = interaction;
   if(data.name === 'reply') {
     const json = await reply.load();
+    if(list.error) return sendMessage(`reply error: ${list.error.message}\n${list.error.stack}`, '1053457173314801686');
     const [ sub ] = data.options;
     if(sub.name === 'list') {
       const list = json.map(data => {
@@ -177,6 +178,7 @@ async interaction => {
   const { data } = interaction;
   if(data.name === 'reply') {
     const list = await reply.load();
+    if(list.error) return sendMessage(`reply error: ${list.error.message}\n${list.error.stack}`, '1053457173314801686');
     interaction.send({ type: 8, data: {
       choices: list.map(data => ({ name: data.key, value: data.key }))
     }});
