@@ -8,7 +8,7 @@ import {
 } from './functions.js';
 import { inspect } from 'util';
 
-const reply = new ReplyManager('1067259810287984750', '1052765687476666368');
+const reply = new ReplyManager('1052765687476666368');
 
 event.once('ready', async d => {
   console.log('connected.');
@@ -21,16 +21,19 @@ event.on('message_create', async message => {
   if(message.author.id === '506254167325671424') return;
   const list = await reply.load();
   if(list.error) return sendMessage(`reply error: ${list.error.message}\n${list.error.stack}`, '1053457173314801686');
-  const select = list.find(data => data.key === message.content);
+  const select = list.find(data => message.content.includes(data.key));
   if(select) {
-    if(Math.floor(Math.random() * (select.weight||0)) !== 0) return;
+    if(!select.include && message.content !== select.key) return;
+    let num = Math.floor(Math.random() * select.values.reduce((a, b) => a + (b.weight ?? 1), 1));
+    const choice = select.values.find(data => (num -= (data.weight ?? 1)) < 1);
+    if(Math.floor(Math.random() * (choice.chance ?? 0)) !== 0) return;
     sendMessage("call to send", '1053457173314801686');
     const type = hasGuildMember(message.guild_id, '506254167325671424') ? 'BOT' : 'SELF';
     if(type === 'SELF' && message.author.id === '395010195090178058') return;
-    await sleep(Math.floor((Math.random() * (select.wait?.max||0 - select.wait?.min||0))+select.wait?.min||0) * 1000);
+    await sleep(Math.floor((Math.random() * (choice.wait?.max||0 - choice.wait?.min||0))+choice.wait?.min||0) * 1000);
     setTyping(message.channel_id, type);
     await sleep(1000);
-    const str = select.value[Math.floor(Math.random() * select.value.length)];
+    const str = choice.value[Math.floor(Math.random() * choice.value.length)];
     sendMessage(str, message.channel_id, type);
   }
   else if(message.content.match(/(kinji|きんじ|キンジ|金次)/)
@@ -63,7 +66,7 @@ event.on('message_create', async message => {
   const [ cmd, ...args ] = message.content.split(' ');
   if(cmd === 'delete') {
     deleteMessage(message.channel_id, message.id, 'SELF');
-    if(args[0] === 'count') bulkDeleteMessage(message.channel_id, args[1]);
+    if([ 'count', 'c' ].includes(args[0])) bulkDeleteMessage(message.channel_id, args[1]);
     else args.forEach(msg_id => deleteMessage(message.channel_id, msg_id));
   }
   else if(cmd === 'send') {
@@ -94,7 +97,7 @@ event.on('application_command', async interaction => {
       const list = json.map(data => {
         return {
           "name": data.key,
-          "value": `>>> ${data.value.join(', ')}\n確率: ${data.weight > 1 ? '1/'+data.weight:'確定'}\n待機: ${data.wait ? data.wait.min+'~'+data.wait.max+'秒':'無し'}`,
+          "value": data.values.map(choice => `>>> ${choice.value.join(', ')}\n確率: ${choice.weight > 1 ? '1/'+choice.weight:'確定'}\n待機: ${choice.wait ? choice.wait.min+'~'+choice.wait.max+'秒':'無し'}`).join('\n'),
           "inline": true
         }
       }).slice(0, 25);
@@ -108,9 +111,9 @@ event.on('application_command', async interaction => {
     for(const i in json) {
       if(json[i].key === param.key) {
         if(sub.name === 'add') {
-          json[i].value.push(param.value);
-          if(param.weight) json[i].weight = Math.max(param.weight, 1);
-          if(param.min_wait || param.max_wait) json[i].wait = { min: Math.max(param.min_wait ?? 0, 0), max: Math.max(param.max_wait ?? param.min_wait, 0) };
+          const num = json[i].values.push({ value: [ param.value ] });
+          if(param.weight) json[i].values[num].weight = Math.max(param.weight, 1);
+          if(param.min_wait || param.max_wait) json[i].values[num].wait = { min: Math.max(param.min_wait ?? 0, 0), max: Math.max(param.max_wait ?? param.min_wait, 0) };
           await reply.save(json);
           return interaction.reply({ content: `${param.key}に${param.value}を登録しました` });
         } else if(sub.name === 'remove') {
@@ -119,9 +122,12 @@ event.on('application_command', async interaction => {
             await reply.save(json);
             return interaction.reply({ content: param.key + 'で登録された文字を削除しました' });
           } else {
-            const index = json[i].value.indexOf(param.value);
+            const choice = json[i].values.findIndex(choice => choice.value.includes(param.value));
+            if(!choice) return interaction.reply({ content: `${param.key}に${param.value}は登録されていません` });
+            const index = json[i].values[choice].value.indexOf(param.value);
             if(index === -1) return interaction.reply({ content: `${param.key}に${param.value}は登録されていません` });
-            json[i].value.splice(index,1);
+            if(json[i].values[choice].value.length === 1) json[i].values[choice].value.splice(index, 1);
+            else json[i].values.splice(choice, 1);
             await reply.save(json);
             return interaction.reply({ content: `${param.key}の${param.value}を削除しました` });
           }
@@ -129,9 +135,9 @@ event.on('application_command', async interaction => {
       }
     };
     if(sub.name === 'add') {
-      json.push({"key": param.key, "value": [param.value]});
-      if(param.weight) json.slice(-1)[0].weight = Math.max(param.weight, 1);
-      if(param.min_wait || param.max_wait) json.slice(-1)[0].wait = { min: Math.max(param.min_wait ?? 0, 0), max: Math.max(param.max_wait ?? param.min_wait, 0) };
+      const num = json.push({"key": param.key, "values": [ { value: [ param.value ] } ] });
+      if(param.weight) json[num].values[0].weight = Math.max(param.weight, 1);
+      if(param.min_wait || param.max_wait) json[num].values[0].wait = { min: Math.max(param.min_wait ?? 0, 0), max: Math.max(param.max_wait ?? param.min_wait, 0) };
       await reply.save(json);
       return interaction.reply({ content: `${param.key}に${param.value}を登録しました` });
     } else {

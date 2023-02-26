@@ -69,24 +69,29 @@ export class Interaction {
 };
 
 export class ReplyManager {
-  constructor(message,channel) {
-    this.message_id = message;
+  constructor(channel) {
     this.channel_id = channel;
   };
   async load() {
     try {
-      const message = await getMessage(this.channel_id, this.message_id);
-      const json = JSON.parse(message.content?.replace(/^```json|```$/g, '')||'[]');
+      const messages = await getMessages(this.channel_id);
+      const json = messages.map(message => Object.assign(JSON.parse(message.content?.replace(/^```json|```$/g, '')||'[]'), { id: message.id }));
       return json;
     } catch(e) {
       return { error: e };
     }
   };
   async save(json) {
-    await editMessage(`\`\`\`json\n${JSON.stringify(json)}\n\`\`\``, this.message_id, this.channel_id, 'SELF');
+    json.forEach(async data => {
+      const message = await getMessage(this.channel_id, data.id);
+      if(message.content === JSON.stringify(data)) return;
+      else if(!data.id) await sendMessage(`\`\`\`json\n${JSON.stringify(data)}\n\`\`\``, this.channel_id, 'SELF');
+      else await editMessage(`\`\`\`json\n${JSON.stringify(json)}\n\`\`\``, this.message_id, this.channel_id, 'SELF');
+    });
   };
 };
 
+/** @param { string } content @param { channel_id } id @param { send_type } type */
 export async function sendMessage(content, id = '599272915153715201', type = 'BOT') {
   const data = typeof content === 'string' ? ({ content }):content;
   const result = await fetch(`${url}/channels/${id}/messages`, {
@@ -161,7 +166,7 @@ export async function getChannel(id) {
 };
 
 export async function getMessages(ch_id, limit) {
-  const result = await fetch(`${url}/channels/${ch_id}/messages?limit=${limit}`, {
+  const result = await fetch(`${url}/channels/${ch_id}/messages${limit ? '?limit=' + limit:''}`, {
     headers: { 
       "Content-Type": "application/json",
       "Authorization": 'Bot ' + process.env.BOT_TOKEN
@@ -193,6 +198,7 @@ export async function getReaction(guild_id, emoji_id, type = 'BOT') {
   return await result.json();
 };
 
+/** @param { string } content @param { message_id } message_id @param { channel_id } channel_id @param { send_type } type */
 export async function editMessage(content, message_id, channel_id, type = 'BOT') {
   const data = typeof content === 'string' ? ({ content }):content;
   const result = await fetch(`${url}/channels/${channel_id}/messages/${message_id}`, {
