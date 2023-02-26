@@ -88,13 +88,13 @@ export class ReplyManager {
       if(message.content === `\`\`\`json\n${JSON.stringify(data)}\n\`\`\``) return;
       else if(!data.id) {
         const result = await sendMessage(`\`\`\`json\n${JSON.stringify(data)}\n\`\`\``, this.channel_id, 'SELF');
-        addReaction(result.channel_id, result.id, 'open', '1079306756116709377');
-        addReaction(result.channel_id, result.id, 'close', '1079306788748402709');
+        await addReaction(result.channel_id, result.id, 'open', '1079306756116709377');
+        await addReaction(result.channel_id, result.id, 'close', '1079306788748402709');
       }
-      else{
+      else {
         const result = await editMessage(`\`\`\`json\n${JSON.stringify(data)}\n\`\`\``, data.id, this.channel_id, 'SELF');
-        addReaction(result.channel_id, result.id, 'open', '1079306756116709377');
-        addReaction(result.channel_id, result.id, 'close', '1079306788748402709');
+        await addReaction(result.channel_id, result.id, 'open', '1079306756116709377');
+        await addReaction(result.channel_id, result.id, 'close', '1079306788748402709');
       } 
     });
   };

@@ -104,7 +104,7 @@ event.on('application_command', async interaction => {
       const list = json.map(data => {
         return {
           "name": data.key,
-          "value": data.values.map(choice => `>>> ${choice.value.join(', ')}\n確率: ${choice.weight > 1 ? '1/'+choice.weight:'確定'}\n待機: ${choice.wait ? choice.wait.min+'~'+choice.wait.max+'秒':'無し'}`).join('\n'),
+          "value": '>>> ' + data.values.map(choice => `${choice.value.join(', ')}\n確率: ${choice.weight > 1 ? '1/'+choice.weight:'確定'}\n待機: ${choice.wait ? choice.wait.min+'~'+choice.wait.max+'秒':'無し'}`).join('\n'),
           "inline": true
         }
       }).slice(0, 25);
