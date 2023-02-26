@@ -82,6 +82,7 @@ export class ReplyManager {
     }
   };
   async save(json) {
+    console.log(json);
     json.forEach(async data => {
       if(data.delete) return deleteMessage(this.channel_id, data.id);
       const message = await getMessage(this.channel_id, data.id);
