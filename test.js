@@ -25,7 +25,8 @@ async function test() {
               { name: 'weight', type: 4, description: '応答確率' },
               { name: 'chance', type: 4, description: '抽選確率' },
               { name: 'min_wait', type: 4, description: '最小待機時間' },
-              { name: 'max_wait', type: 4, description: '最大待機時間' }
+              { name: 'max_wait', type: 4, description: '最大待機時間' },
+              { name: 'include', type: 5, description: '部分一致でも反応するか' }
             ]
           },
           {
