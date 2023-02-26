@@ -3,8 +3,8 @@ import {
   Interaction,
   getGuild, getChannel, getMessage, getReaction,
   sendMessage, addReaction, setTyping,
-  deleteMessage, bulkDeleteMessage,
-  hasGuildMember, messageUrl, sleep, ReplyManager 
+  deleteMessage, bulkDeleteMessage, deleteReaction,
+  hasGuildMember, messageUrl, sleep, ReplyManager, editMessage
 } from './functions.js';
 import { inspect } from 'util';
 
@@ -84,8 +84,15 @@ event.on('message_create', async message => {
 event.on('message_reaction_add', async react => {
   if(react.user_id !== '395010195090178058') return;
   const message = await getMessage(react.channel_id, react.message_id);
-  if(react.emoji.name !== 'delete') return;
-  deleteMessage(message.channel_id, message.id);
+  if(react.emoji.name === 'delete') {
+    deleteMessage(message.channel_id, message.id);
+  } else if(react.emoji.name === 'open') {
+    editMessage(`\`\`\`json\n${JSON.stringify(JSON.parse(message.content), null, 2)}\n\`\`\``);
+    deleteReaction(message.channel_id, message.id, 'open', '1079306756116709377', react.user_id);
+  }else if(react.emoji.name === 'close') {
+    editMessage(`\`\`\`json\n${JSON.stringify(JSON.parse(message.content))}\n\`\`\``);
+    deleteReaction(message.channel_id, message.id, 'close', '1079306788748402709', react.user_id);
+  }
 });
 
 event.on('application_command', async interaction => {
@@ -126,8 +133,10 @@ event.on('application_command', async interaction => {
             if(!choice) return interaction.reply({ content: `${param.key}に${param.value}は登録されていません` });
             const index = json[i].values[choice].value.indexOf(param.value);
             if(index === -1) return interaction.reply({ content: `${param.key}に${param.value}は登録されていません` });
-            if(json[i].values[choice].value.length === 1) json[i].values[choice].value.splice(index, 1);
-            else json[i].values.splice(choice, 1);
+            console.log(json[i].values[choice].value.length);
+            if(json[i].values[choice].value.length === 1) json[i].values.splice(choice, 1);
+            else json[i].values[choice].value.splice(index, 1);
+            console.log(json[i]);
             await reply.save(json);
             return interaction.reply({ content: `${param.key}の${param.value}を削除しました` });
           }

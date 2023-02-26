@@ -87,8 +87,16 @@ export class ReplyManager {
       const message = await getMessage(this.channel_id, data.id);
       console.log(data, data.delete, message.content, message.content === JSON.stringify(data), !data.id);
       if(message.content === `\`\`\`json\n${JSON.stringify(data)}\n\`\`\``) return;
-      else if(!data.id) return sendMessage(`\`\`\`json\n${JSON.stringify(data)}\n\`\`\``, this.channel_id, 'SELF');
-      else return editMessage(`\`\`\`json\n${JSON.stringify(data)}\n\`\`\``, data.id, this.channel_id, 'SELF');
+      else if(!data.id) {
+        const result = await sendMessage(`\`\`\`json\n${JSON.stringify(data)}\n\`\`\``, this.channel_id, 'SELF');
+        addReaction(result.channel_id, result.id, 'open', '1079306756116709377');
+        addReaction(result.channel_id, result.id, 'close', '1079306788748402709');
+      }
+      else{
+        const result = await editMessage(`\`\`\`json\n${JSON.stringify(data)}\n\`\`\``, data.id, this.channel_id, 'SELF');
+        addReaction(result.channel_id, result.id, 'open', '1079306756116709377');
+        addReaction(result.channel_id, result.id, 'close', '1079306788748402709');
+      } 
     });
   };
 };
@@ -130,6 +138,18 @@ export async function bulkDeleteMessage(ch_id, limit) {
     },
     body: JSON.stringify({ messages }),
     method: "POST"
+  });
+};
+
+export async function deleteReaction(ch_id, msg_id, emoji_name, emoji_id, user_id, type = 'BOT') {
+  const emoji = encodeURIComponent(`:${emoji_name}:${emoji_id}`);
+  fetch(
+    `${url}/channels/${ch_id}/messages/${msg_id}/reactions/${emoji}/${user_id}`, {
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": type === 'BOT' ? 'Bot '+process.env.BOT_TOKEN : process.env.SELF_TOKEN
+    },
+    method: "DELETE"
   });
 };
 
