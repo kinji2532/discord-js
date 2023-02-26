@@ -120,6 +120,7 @@ event.on('application_command', async interaction => {
         if(sub.name === 'add') {
           const num = json[i].values.push({ value: [ param.value ] }) - 1;
           if(param.weight) json[i].values[num].weight = Math.max(param.weight, 1);
+          if(param.choice) json[i].values[num].choice = Math.max(param.choice, 1);
           if(param.min_wait || param.max_wait) json[i].values[num].wait = { min: Math.max(param.min_wait ?? 0, 0), max: Math.max(param.max_wait ?? param.min_wait, 0) };
           await reply.save(json);
           return interaction.reply({ content: `${param.key}に${param.value}を登録しました` });
@@ -144,6 +145,7 @@ event.on('application_command', async interaction => {
     if(sub.name === 'add') {
       const num = json.push({"key": param.key, "values": [ { value: [ param.value ] } ] }) - 1;
       if(param.weight) json[num].values[0].weight = Math.max(param.weight, 1);
+      if(param.choice) json[num].values[0].choice = Math.max(param.choice, 1);
       if(param.min_wait || param.max_wait) json[num].values[0].wait = { min: Math.max(param.min_wait ?? 0, 0), max: Math.max(param.max_wait ?? param.min_wait, 0) };
       await reply.save(json);
       return interaction.reply({ content: `${param.key}に${param.value}を登録しました` });

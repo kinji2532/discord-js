@@ -89,11 +89,13 @@ export class ReplyManager {
       else if(!data.id) {
         const result = await sendMessage(`\`\`\`json\n${JSON.stringify(data)}\n\`\`\``, this.channel_id, 'SELF');
         await addReaction(result.channel_id, result.id, 'open', '1079306756116709377');
+        await sleep(1000);
         await addReaction(result.channel_id, result.id, 'close', '1079306788748402709');
       }
       else {
         const result = await editMessage(`\`\`\`json\n${JSON.stringify(data)}\n\`\`\``, data.id, this.channel_id, 'SELF');
         await addReaction(result.channel_id, result.id, 'open', '1079306756116709377');
+        await sleep(1000);
         await addReaction(result.channel_id, result.id, 'close', '1079306788748402709');
       } 
     });
