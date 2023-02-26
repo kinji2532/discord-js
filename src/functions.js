@@ -82,10 +82,10 @@ export class ReplyManager {
     }
   };
   async save(json) {
-    console.log(json);
     json.forEach(async data => {
       if(data.delete) return deleteMessage(this.channel_id, data.id);
       const message = await getMessage(this.channel_id, data.id);
+    console.log(data, data.delete, message.content, message.content === JSON.stringify(data), !data.id);
       if(message.content === JSON.stringify(data)) return;
       else if(!data.id) return sendMessage(`\`\`\`json\n${JSON.stringify(data)}\n\`\`\``, this.channel_id, 'SELF');
       else return editMessage(`\`\`\`json\n${JSON.stringify(json)}\n\`\`\``, this.message_id, this.channel_id, 'SELF');
