@@ -87,10 +87,10 @@ event.on('message_reaction_add', async react => {
   if(react.emoji.name === 'delete') {
     deleteMessage(message.channel_id, message.id);
   } else if(react.emoji.name === 'open') {
-    editMessage(`\`\`\`json\n${JSON.stringify(JSON.parse(message.content?.replace(/^```json|```$/g, '')||'[]'), null, 2)}\n\`\`\``);
+    editMessage(`\`\`\`json\n${JSON.stringify(JSON.parse(message.content?.replace(/^```json|```$/g, '')||'[]'), null, 2)}\n\`\`\``, 'SELF');
     deleteReaction(message.channel_id, message.id, 'open', '1079306756116709377', react.user_id);
   }else if(react.emoji.name === 'close') {
-    editMessage(`\`\`\`json\n${JSON.stringify(JSON.parse(message.content?.replace(/^```json|```$/g, '')||'[]'))}\n\`\`\``);
+    editMessage(`\`\`\`json\n${JSON.stringify(JSON.parse(message.content?.replace(/^```json|```$/g, '')||'[]'))}\n\`\`\``, 'SELF');
     deleteReaction(message.channel_id, message.id, 'close', '1079306788748402709', react.user_id);
   }
 });
