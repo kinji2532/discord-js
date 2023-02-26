@@ -105,7 +105,7 @@ event.on('application_command', async interaction => {
       const list = json.map(data => {
         return {
           "name": data.key,
-          "value": '>>> ' + data.values.map(choice => `${choice.value.join(', ')}\n抽選率: ${choice.weight ?? 1}\n確率: ${choice.choice > 1 ? '1/'+choice.choice:'確定'}\n待機: ${choice.wait ? choice.wait.min+'~'+choice.wait.max+'秒':'無し'}`).join('\n'),
+          "value": '>>> ' + data.values.map(choice => `${choice.value.join(', ')}\n抽選率: ${choice.weight ?? 1}\n確率: ${choice.chance > 1 ? '1/'+choice.chance:'確定'}\n待機: ${choice.wait ? choice.wait.min+'~'+choice.wait.max+'秒':'無し'}`).join('\n'),
           "inline": true
         }
       }).slice(0, 25);
@@ -121,7 +121,7 @@ event.on('application_command', async interaction => {
         if(sub.name === 'add') {
           const num = json[i].values.push({ value: [ param.value ] }) - 1;
           if(param.weight) json[i].values[num].weight = Math.max(param.weight, 1);
-          if(param.choice) json[i].values[num].choice = Math.max(param.choice, 1);
+          if(param.chance) json[i].values[num].chance = Math.max(param.chance, 1);
           if(param.min_wait || param.max_wait) json[i].values[num].wait = { min: Math.max(param.min_wait ?? 0, 0), max: Math.max(param.max_wait ?? param.min_wait, 0) };
           await reply.save(json);
           return interaction.reply({ content: `${param.key}に${param.value}を登録しました` });
@@ -146,7 +146,7 @@ event.on('application_command', async interaction => {
     if(sub.name === 'add') {
       const num = json.push({"key": param.key, "values": [ { value: [ param.value ] } ] }) - 1;
       if(param.weight) json[num].values[0].weight = Math.max(param.weight, 1);
-      if(param.choice) json[num].values[0].choice = Math.max(param.choice, 1);
+      if(param.chance) json[num].values[0].chance = Math.max(param.chance, 1);
       if(param.min_wait || param.max_wait) json[num].values[0].wait = { min: Math.max(param.min_wait ?? 0, 0), max: Math.max(param.max_wait ?? param.min_wait, 0) };
       await reply.save(json);
       return interaction.reply({ content: `${param.key}に${param.value}を登録しました` });

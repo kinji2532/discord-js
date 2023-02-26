@@ -23,7 +23,7 @@ async function test() {
               { name: 'key', type: 3, description: '反応させる文字', required: true },
               { name: 'value', type: 3, description: '応答させる文字', required: true },
               { name: 'weight', type: 4, description: '応答確率' },
-              { name: 'choice', type: 4, description: '抽選確率' },
+              { name: 'chance', type: 4, description: '抽選確率' },
               { name: 'min_wait', type: 4, description: '最小待機時間' },
               { name: 'max_wait', type: 4, description: '最大待機時間' }
             ]
