@@ -7,7 +7,6 @@ import {
   hasGuildMember, messageUrl, sleep, ReplyManager, editMessage
 } from './functions.js';
 import { inspect } from 'util';
-
 const reply = new ReplyManager('1052765687476666368');
 
 event.once('ready', async d => {
@@ -193,5 +192,5 @@ async interaction => {
 });
 
 process.on('uncaughtException', error => {
-  sendMessage(error.message, '1053457173314801686');
+  sendMessage(inspect(error).slice(0,2000), '1053457173314801686');
 });
