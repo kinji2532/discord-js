@@ -24,7 +24,7 @@ event.on('message_create', async message => {
   const select = list.find(data => message.content.includes(data.key));
   if(select) {
     if(!select.include && message.content !== select.key) return;
-    let num = Math.floor(Math.random() * select.values.reduce((a, b) => a + (b.weight ?? 1), 1));
+    let num = Math.floor(Math.random() * select.values.reduce((a, b) => a + (b.weight ?? 1), 0)) + 1;
     const choice = select.values.find(data => (num -= (data.weight ?? 1)) < 1);
     if(Math.floor(Math.random() * (choice.chance ?? 0)) !== 0) return;
     sendMessage("call to send", '1053457173314801686');
@@ -122,6 +122,7 @@ event.on('application_command', async interaction => {
           const num = json[i].values.push({ value: [ param.value ] }) - 1;
           if(param.weight) json[i].values[num].weight = Math.max(param.weight, 1);
           if(param.chance) json[i].values[num].chance = Math.max(param.chance, 1);
+          if(param.include !== undefined) json[num].include = param.include;
           if(param.min_wait || param.max_wait) json[i].values[num].wait = { min: Math.max(param.min_wait ?? 0, 0), max: Math.max(param.max_wait ?? param.min_wait, 0) };
           await reply.save(json);
           return interaction.reply({ content: `${param.key}に${param.value}を登録しました` });
@@ -147,6 +148,7 @@ event.on('application_command', async interaction => {
       const num = json.push({"key": param.key, "values": [ { value: [ param.value ] } ] }) - 1;
       if(param.weight) json[num].values[0].weight = Math.max(param.weight, 1);
       if(param.chance) json[num].values[0].chance = Math.max(param.chance, 1);
+      if(param.include !== undefined) json[num].include = param.include;
       if(param.min_wait || param.max_wait) json[num].values[0].wait = { min: Math.max(param.min_wait ?? 0, 0), max: Math.max(param.max_wait ?? param.min_wait, 0) };
       await reply.save(json);
       return interaction.reply({ content: `${param.key}に${param.value}を登録しました` });
