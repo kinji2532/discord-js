@@ -18,7 +18,8 @@ event.once('ready', async d => {
 });
 
 event.on('message_create', async message => {
-  if(message.author.id === '506254167325671424') return;
+  if(message.author.id === '506254167325671424'
+  || message.channel_id === '1052765687476666368') return;
   const list = await reply.load();
   if(list.error) return sendMessage(`reply error: ${list.error.message}\n${list.error.stack}`, '1053457173314801686');
   const select = list.find(data => message.content.includes(data.key));
