@@ -73,12 +73,13 @@ export class ReplyManager {
     this.channel_id = channel;
   };
   async load() {
+    let messages;
     try {
-      const messages = ((await getMessages(this.channel_id)) ?? []).reverse();
-      const json = messages.map(message => Object.assign(JSON.parse(message.content?.replace(/^```json|```$/g, '')||'[]'), { id: message.id }));
+      messages = (await getMessages(this.channel_id)) ?? [];
+      const json = messages.reverse().map(message => Object.assign(JSON.parse(message.content?.replace(/^```json|```$/g, '')||'[]'), { id: message.id }));
       return json;
     } catch(e) {
-      return { error: e };
+      return { error: e, messages };
     }
   };
   async save(json) {

@@ -20,7 +20,11 @@ event.on('message_create', async message => {
   if(message.author.id === '506254167325671424'
   || message.channel_id === '1052765687476666368') return;
   const list = await reply.load();
-  if(list.error) return sendMessage(`reply error: ${list.error.message}\n${list.error.stack}`, '1053457173314801686');
+  if(list.error) {
+    const result = await sendMessage(`reply error: ${list.error.message}\n${list.error.stack}\n${inspect(list.messages).slice(0,1000)}`, '1053457173314801686');
+    addReaction(result.channel_id, result.id, 'delete', '721260517875777546');
+    return;
+  }
   const select = list.find(data => message.content.includes(data.key));
   if(select) {
     if(!select.include && message.content !== select.key) return;
