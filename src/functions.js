@@ -75,7 +75,7 @@ export class ReplyManager {
   async load() {
     try {
       const messages = await getMessages(this.channel_id);
-      if(!messages.length) return { error: 'late limited.' };
+      if(!messages.length) return { error: { message: 'late limited.', stack: '' } };
       const json = messages.reverse().map(message => Object.assign(JSON.parse(message.content?.replace(/^```json|```$/g, '')||'[]'), { id: message.id }));
       return json;
     } catch(e) {
