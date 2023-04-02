@@ -21,7 +21,7 @@ event.on('message_create', async message => {
   || message.channel_id === '1052765687476666368') return;
   const list = await reply.load();
   if(list.error) {
-    const result = await sendMessage(`reply error: ${list.error.message}\n${list.error.stack}\n${inspect(list.messages).slice(0,1000)}`, '1053457173314801686');
+    const result = await sendMessage(`reply error: ${list.error.message}\n${list.error.stack}`, '1092066196288970774');
     addReaction(result.channel_id, result.id, 'delete', '721260517875777546');
     return;
   }
