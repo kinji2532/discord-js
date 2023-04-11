@@ -19,26 +19,28 @@ event.once('ready', async d => {
 event.on('message_create', async message => {
   if(message.author.id === '506254167325671424'
   || message.channel_id === '1052765687476666368') return;
-  const list = await reply.load();
-  if(list.error) {
-    const result = await sendMessage(`reply error: ${list.error.message}\n${list.error.stack}`, '1092066196288970774');
-    addReaction(result.channel_id, result.id, 'delete', '721260517875777546');
-    return;
-  }
-  const select = list.find(data => message.content.includes(data.key));
-  if(select) {
-    if(!select.include && message.content !== select.key) return;
-    let num = Math.floor(Math.random() * select.values.reduce((a, b) => a + (b.weight ?? 1), 0)) + 1;
-    const choice = select.values.find(data => (num -= (data.weight ?? 1)) < 1);
-    if(Math.floor(Math.random() * (choice.chance ?? 0)) !== 0) return;
-    sendMessage("call to send", '1053457173314801686');
-    const type = hasGuildMember(message.guild_id, '506254167325671424') ? 'BOT' : 'SELF';
-    if(type === 'SELF' && message.author.id === '395010195090178058') return;
-    await sleep(Math.floor((Math.random() * (choice.wait?.max||0 - choice.wait?.min||0))+choice.wait?.min||0) * 1000);
-    setTyping(message.channel_id, type);
-    await sleep(1000);
-    const str = choice.value[Math.floor(Math.random() * choice.value.length)];
-    sendMessage(str, message.channel_id, type);
+  if([ '919862408837730345' ].includes(message.channel_id)) {
+    const list = await reply.load();
+    if(list.error) {
+      const result = await sendMessage(`reply error: ${list.error.message}\n${list.error.stack}`, '1092066196288970774');
+      addReaction(result.channel_id, result.id, 'delete', '721260517875777546');
+      return;
+    }
+    const select = list.find(data => message.content.includes(data.key));
+    if(select) {
+      if(!select.include && message.content !== select.key) return;
+      let num = Math.floor(Math.random() * select.values.reduce((a, b) => a + (b.weight ?? 1), 0)) + 1;
+      const choice = select.values.find(data => (num -= (data.weight ?? 1)) < 1);
+      if(Math.floor(Math.random() * (choice.chance ?? 0)) !== 0) return;
+      sendMessage("call to send", '1053457173314801686');
+      const type = hasGuildMember(message.guild_id, '506254167325671424') ? 'BOT' : 'SELF';
+      if(type === 'SELF' && message.author.id === '395010195090178058') return;
+      await sleep(Math.floor((Math.random() * (choice.wait?.max||0 - choice.wait?.min||0))+choice.wait?.min||0) * 1000);
+      setTyping(message.channel_id, type);
+      await sleep(1000);
+      const str = choice.value[Math.floor(Math.random() * choice.value.length)];
+      sendMessage(str, message.channel_id, type);
+    }
   }
   else if(message.content.match(/(kinji|きんじ|キンジ|金次)/)
   || message.mentions.some(user => user.id === '395010195090178058')) {
