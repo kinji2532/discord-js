@@ -19,7 +19,7 @@ event.once('ready', async d => {
 event.on('message_create', async message => {
   if(message.author.id === '506254167325671424'
   || message.channel_id === '1052765687476666368') return;
-  if([ '919862408837730345' ].includes(message.channel_id)) {
+  if([ '919862408837730345' ].includes(message.guild_id)) {
     const list = await reply.load();
     if(list.error) {
       const result = await sendMessage(`reply error: ${list.error.message}\n${list.error.stack}`, '1092066196288970774');
