@@ -58,14 +58,17 @@ event.on('message_create', async message => {
         thumbnail: {
           url: `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`
         },
-        title: guild.name || 'DM',
+        title: guild.name ? `[${guild.name}]<${channel.name}>`:'DM',
         url: messageUrl(message),
         description: message.content,
-        image: message.attachments[0] ? {
+        image: message.attachments.length === 1 ? {
           url: message.attachments[0].url
         }:undefined
       }]
     }, '593069734656737313');
+    if(message.attachments.length > 1) {
+      sendMessage(message.attachments.map(attach => attach.url).join('\n'));
+    }
     addReaction(result.channel_id, result.id, 'delete', '721260517875777546');
   }
   if(message.author.id !== '395010195090178058') return;
