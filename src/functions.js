@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 
 import dotenv from 'dotenv';
-dotenv.config({ path: '../.env' });
+dotenv.config();
 
 /** @typedef { import('./types/class.d.ts').BaseMessage } BaseMessage */
 /** @typedef { import('./types/class.d.ts').BaseChannel } BaseChannel */

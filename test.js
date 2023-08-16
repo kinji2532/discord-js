@@ -1,11 +1,11 @@
-import { Interaction } from './src/functions.js';
+import { Interaction, getChannel } from './src/functions.js';
 
 const list = [
   '919862408837730345',
   '506072711815233536'
 ]
 
-test();
+//test();
 
 async function test() {
   list.forEach(async id => {
@@ -67,3 +67,7 @@ async function test() {
     ], id));
   });
 };
+
+(async () => {
+  console.log(await getChannel('1052765687476666368'));
+})();

@@ -1,5 +1,5 @@
 //@ts-check
-import { getChannel, getGuild, getMessage, sendMessage } from './functions.js';
+import { addReaction, getChannel, getGuild, getMessage, sendMessage } from './functions.js';
 
 /** @typedef { import('./types/class.d.ts').BaseMessage } BaseMessage */
 /** @typedef { import('./types/class.d.ts').BaseChannel } BaseChannel */
@@ -18,6 +18,7 @@ export class Message {
   constructor(msg) {
     this.#message = msg;
     this.id = msg.id;
+    this.url = '';
     this.content = msg.content;
     if(msg.embeds.length) this.embeds = msg.embeds.map(embed => new Embed(embed));
     if(msg.attachments.length) this.attachments = msg.attachments;
@@ -28,6 +29,10 @@ export class Message {
     this.author = User.default();
     this.channel = Channel.default();
     this.guild = Guild.default();
+  };
+  /** @param { string } name @param { string } id */
+  async react(name, id) {
+    return addReaction(this.channel.id, this.id, name, id);
   };
   /** @param { BaseMessage } msg */
   static async create(msg) {
@@ -40,7 +45,10 @@ export class Message {
     }
     message.author = User.get(msg.author.id);
     message.channel = Channel.get(msg.channel_id);
-    message.guild = message.channel.guild;
+    if(message.channel.guild) {
+      message.guild = message.channel.guild;
+      message.url = `https://discord.com/channels/${message.guild.id}/${message.channel.id}/${message.id}`;
+    }
     Message.#messages.set(msg.id, message);
     return message;
   };
@@ -114,7 +122,10 @@ export class Guild {
     this.#guild = guild;
     this.id = guild.id;
     this.name = guild.name;
-    if(guild.icon) this.icon = guild.icon;
+    if(guild.icon) {
+      this.icon = guild.icon;
+      this.icon_url = `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`;
+    }
     if(guild.description) this.description = guild.description;
     this.owner_id = guild.owner_id;
     if(guild.banner) this.banner = guild.banner;
@@ -159,7 +170,10 @@ export class User {
     this.id = user.id;
     this.username = user.username;
     this.global_name = user.global_name;
-    if(user.avatar) this.avatar = user.avatar;
+    if(user.avatar) {
+      this.avatar = user.avatar;
+      this.avatar_url = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+    }
     this.discriminator = user.discriminator;
     if(user.banner) this.banner = user.banner;
     if(user.accent_color) this.accent_color = user.accent_color;

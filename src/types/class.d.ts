@@ -116,6 +116,7 @@ export interface BaseEmbed {
 
 export declare class Message {
   id: string;
+  url: string;
   author: User;
   content?: string;
   timestamp: Date;
@@ -149,6 +150,7 @@ export declare class Guild {
   id: string;
   name: string;
   icon?: string;
+  icon_url?: string;
   description?: string;
   owner_id: string;
   banner?: string;
@@ -162,6 +164,7 @@ export declare class User {
   id: string;
   username: string;
   avatar?: string;
+  avatar_url?: string;
   discriminator: string;
   banner?: string;
   accent_color?: string;
