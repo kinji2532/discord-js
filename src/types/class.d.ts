@@ -3,12 +3,12 @@ export interface BaseMessage {
   type: number;
   channel_id: string;
   author: any;
-  content: string;
-  embeds: any[];
+  content?: string;
+  embeds: BaseEmbed[];
   attachments: any[];
   mentions: any[];
   reactions?: any[];
-  components: any[];
+  components?: any[];
   timestamp: Date;
   pinned: boolean;
 };
@@ -114,7 +114,7 @@ export interface BaseEmbed {
   fields?: { name: string; value: string; inline?: boolean; }[];
 };
 
-export class Message {
+export declare class Message {
   id: string;
   author: User;
   content?: string;
@@ -122,9 +122,13 @@ export class Message {
   pinned: boolean;
   channel: Channel;
   guild: Guild;
+  static #messages: Map<string, Message>;
+  constructor(msg: BaseMessage): Message;
+  static async create(msg: BaseMessage): Promise<Message>;
+  static get(id: string): Message;
 };
 
-export class Channel {
+export declare class Channel {
   id: string;
   name: string;
   type: number;
@@ -132,10 +136,16 @@ export class Channel {
   parent_id?: string;
   last_message_id?: string;
   guild: Guild;
-  send: (data: string | SendMessageData, type?: string) => Promise<Message>
+  constructor(ch: BaseChannel): Channel;
+  async send(data: string | SendMessageData, type?: string): Promise<Message>;
+  static get(id: string): Channel;
+  static async fetch(id: string): Promise<Channel>;
+  static async create(ch: BaseChannel): Promise<Channel>;
+  static has(id: string): boolean;
+  static default(): Channel;
 };
 
-export class Guild {
+export declare class Guild {
   id: string;
   name: string;
   icon?: string;
@@ -148,7 +158,7 @@ export class Guild {
   stickers?: any[];
 }
 
-export class User {
+export declare class User {
   id: string;
   username: string;
   avatar?: string;
@@ -158,4 +168,19 @@ export class User {
   global_name: string;
   avatar_decoration?: string;
   banner_color?: string;
+};
+
+export declare class Embed {
+  title?: string;
+  description?: string;
+  url?: string;
+  timestamp?: Date;
+  color?: string;
+  footer?: { text: string; icon_url?: string; proxy_icon_url?: string; };
+  image?: { url: string; proxy_url?: string; height?: number; width?: number; };
+  thumbnail?: { url: string; proxy_url?: string; height?: number; width?: number; };
+  video?: { url?: string; proxy_url?: string; height?: number; width?: number; };
+  provider?: { name?: string; url?: string; };
+  author?: { name: string; url?: string; icon_url?: string; proxy_icon_url?: string; };
+  fields?: { name: string; value: string; inline?: boolean; }[];
 };

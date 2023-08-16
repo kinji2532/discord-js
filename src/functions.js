@@ -3,10 +3,12 @@ import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 dotenv.config({ path: '../.env' });
 
-/** @typedef { import('./typedef.d.ts').BaseMessage } BaseMessage */
-/** @typedef { import('./typedef.d.ts').SendMessageData } SendMessageData */
-/** @typedef { import('./typedef.d.ts').BaseChannel } BaseChannel */
-/** @typedef { import('./typedef.d.ts').BaseGuild } BaseGuild */
+/** @typedef { import('./types/class.d.ts').BaseMessage } BaseMessage */
+/** @typedef { import('./types/class.d.ts').BaseChannel } BaseChannel */
+/** @typedef { import('./types/class.d.ts').BaseGuild } BaseGuild */
+/** @typedef { import('./types/class.d.ts').BaseUser } BaseUser */
+/** @typedef { import('./types/class.d.ts').BaseEmbed } BaseEmbed */
+/** @typedef { import('./types/class.d.ts').SendMessageData } SendMessageData */
 
 const url = 'https://discord.com/api/v10';
 const headers = { 

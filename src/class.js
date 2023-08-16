@@ -1,28 +1,27 @@
 //@ts-check
-import {
-  getChannel, getGuild, getMessage,
-  sendMessage
-} from './functions.js';
+import { getChannel, getGuild, getMessage, sendMessage } from './functions.js';
 
-/** @typedef { import('./typedef.d.ts').BaseMessage } BaseMessage */
-/** @typedef { import('./typedef.d.ts').SendMessageData } SendMessageData */
-/** @typedef { import('./typedef.d.ts').BaseChannel } BaseChannel */
-/** @typedef { import('./typedef.d.ts').BaseGuild } BaseGuild */
-/** @typedef { import('./typedef.d.ts').BaseUser } BaseUser */
-/** @typedef { import('./typedef.d.ts').BaseEmbed } BaseEmbed */
+/** @typedef { import('./types/class.d.ts').BaseMessage } BaseMessage */
+/** @typedef { import('./types/class.d.ts').BaseChannel } BaseChannel */
+/** @typedef { import('./types/class.d.ts').BaseGuild } BaseGuild */
+/** @typedef { import('./types/class.d.ts').BaseUser } BaseUser */
+/** @typedef { import('./types/class.d.ts').BaseEmbed } BaseEmbed */
+/** @typedef { import('./types/class.d.ts').SendMessageData } SendMessageData */
 
-/** @type { import('./typedef.d.ts').Message } */
+/** @type { import('./types/class.d.ts').Message } */
 export class Message {
-  #message = {};
+  /** @type { BaseMessage } */
+  #message;
+  /** @type { Map<string, Message> } */
   static #messages = new Map();
-  /** @param { BaseMessage } msg  */
+  /** @param { BaseMessage } msg */
   constructor(msg) {
     this.#message = msg;
     this.id = msg.id;
     this.content = msg.content;
     if(msg.embeds.length) this.embeds = msg.embeds.map(embed => new Embed(embed));
     if(msg.attachments.length) this.attachments = msg.attachments;
-    if(msg.components.length) this.components = msg.components;
+    if(msg.components) this.components = msg.components;
     if(msg.reactions) this.reactions = msg.reactions;
     this.timestamp = msg.timestamp;
     this.pinned = msg.pinned;
@@ -51,10 +50,11 @@ export class Message {
   };
 };
 
-/** @type { import('./typedef.d.ts').Channel } */
+/** @type { import('./types/class.d.ts').Channel } */
 export class Channel {
-  #list = [];
-  #channel = {};
+  /** @type { BaseChannel } */
+  #channel;
+  /** @type { Map<string, Channel> } */
   static #channels = new Map();
   /** @param { BaseChannel } ch */
   constructor(ch) {
@@ -66,29 +66,31 @@ export class Channel {
     if(ch.topic) this.topic = ch.topic;
     this.parent_id = ch.parent_id;
     this.last_message_id = ch.last_message_id;
-    this.guild = Guild.default();
+    if(ch.guild_id) this.guild = Guild.default();
     Channel.#channels.set(ch.id, this);
   }
-  /** @param { string | SendMessageData } data @param { string= } type */
+  /** @param { SendMessageData | string } data @param { 'BOT' | 'SELF' } type */
   async send(data, type) {
     return Message.create(await sendMessage(data, this.id, type));
   };
-  /** @param { string } id @returns { Channel } */
+  /** @param { string } id */
   static get(id) {
-    return this.#channels.get(id);
+    return this.#channels.get(id) || this.default();
   };
   /** @param { string } id */
   static async fetch(id) {
     const ch = await getChannel(id);
     return await this.create(ch);
   }
-  /** @param { any } ch */
+  /** @param { BaseChannel } ch */
   static async create(ch) {
     const channel = new this(ch);
-    if(!Guild.has(ch.guild_id)) {
-      await Guild.fetch(ch.guild_id);
+    if(ch.guild_id) {
+      if(!Guild.has(ch.guild_id)) {
+        await Guild.fetch(ch.guild_id);
+      }
+      channel.guild = Guild.get(ch.guild_id);
     }
-    channel.guild = Guild.get(ch.guild_id);
     this.#channels.set(ch.id, channel);
     return ch;
   };
@@ -96,15 +98,16 @@ export class Channel {
   static has(id) {
     return this.#channels.has(id);
   };
-  /** @returns { Channel } */
   static default() {
     return new this({ id: '', name: '', type: 0 });
   };
 };
 
-/** @type { import('./typedef.d.ts').Guild } */
+/** @type { import('./types/class.d.ts').Guild } */
 export class Guild {
-  #guild = {};
+  /** @type { BaseGuild } */
+  #guild;
+  /** @type { Map<string, Guild> } */
   static #guilds = new Map();
   /** @param { BaseGuild } guild */
   constructor(guild) {
@@ -120,16 +123,16 @@ export class Guild {
     if(guild.emojis) this.emojis = guild.emojis;
     if(guild.stickers) this.stickers = guild.stickers;
   };
-  /** @param { string } id @returns { Guild } */
+  /** @param { string } id */
   static get(id) {
-    return this.#guilds.get(id);
+    return this.#guilds.get(id) || this.default();
   };
-  /** @param { string } id  */
+  /** @param { string } id */
   static async fetch(id) {
     const gu = await getGuild(id);
     return await this.create(gu);
   }
-  /** @param { BaseGuild } gu  */
+  /** @param { BaseGuild } gu */
   static async create(gu) {
     const guild = new this(gu);
     Guild.#guilds.set(guild.id, guild);
@@ -139,15 +142,16 @@ export class Guild {
   static has(id) {
     return this.#guilds.has(id);
   };
-  /** @returns { Guild } */
   static default() {
     return new this({ id: '', name: '', owner_id: '' });
   };
 };
 
-/** @type { import('./typedef.d.ts').User } */
+/** @type { import('./types/class.d.ts').User } */
 export class User {
-  #user = {};
+  /** @type { BaseUser } */
+  #user;
+  /** @type { Map<string, User> } */
   static #users = new Map();
   /** @param { BaseUser } user */
   constructor(user) {
@@ -162,9 +166,9 @@ export class User {
     if(user.avatar_decoration) this.avatar_decoration = user.avatar_decoration;
     if(user.banner_color) this.banner_color = user.banner_color;
   };
-  /** @param { string } id @returns { User } */
+  /** @param { string } id */
   static get(id) {
-    return this.#users.get(id);
+    return this.#users.get(id) || this.default();
   };
   /** @param { BaseUser } us */
   static async create(us) {
@@ -176,14 +180,15 @@ export class User {
   static has(id) {
     return this.#users.has(id);
   };
-  /** @returns { User } */
   static default() {
     return new this({ id: '', username: '', discriminator: '0', global_name: '' });
   };
 };
 
+/** @type { import('./types/class.d.ts').Embed } */
 export class Embed {
-  #embed = {};
+  /** @type { BaseEmbed } */
+  #embed;
   /** @param { BaseEmbed } embed */
   constructor(embed) {
     this.#embed = embed;
@@ -201,13 +206,3 @@ export class Embed {
     if(embed.footer) this.footer = embed.footer;
   };
 };
-
-async function test() {
-  const msg = await getMessage('637157711485730828', '1139103521128587395');
-  const message = await Message.create(msg);
-
-  //message.channel.send({ embeds: [{ title: 'test', description: 'hello', author: { name: 'tt' } }] });
-  console.log(message.embeds?.[0].title);
-};
-
-test();

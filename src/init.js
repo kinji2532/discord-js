@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import ws from 'ws';
 import { sendMessage } from './functions.js';
+import { Message } from './class.js';
 
 import './server.js';
 
@@ -17,7 +18,7 @@ connect();
 
 function connect() {
   const connection = new ws(reconnect.url + '/?v=6&encoding=json');
-  connection.onmessage = e => {
+  connection.onmessage = async e => {
     const data = JSON.parse(e.data);
 
     if(data.op === 1) {
@@ -69,7 +70,19 @@ function connect() {
 
     if(!data.t || ![ 'READY', 'MESSAGE_CREATE', 'MESSAGE_REACTION_ADD', 'INTERACTION_CREATE' ].includes(data.t)) return;
 
-    event.emit(data.t?.toLowerCase(), data.d);
+    let eventData = data.d;
+
+    switch(data.t) {
+      case 'READY':
+        reconnect.session_id = eventData.session_id;
+        reconnect.url = eventData.resume_gateway_url;
+        break;
+      case 'MESSAGE_CREATE':
+        eventData = await Message.create(eventData);
+        break;
+    };
+
+    event.emit(data.t?.toLowerCase(), eventData);
 
     //console.log(new Date(), data.t?.toLowerCase());
   };
