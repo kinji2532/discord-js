@@ -73,20 +73,25 @@ event.on('message_create', async message => {
   }
   if(message.author.id !== '395010195090178058') return;
   const [ cmd, ...args ] = message.content.split(' ');
-  if(cmd === 'delete') {
-    deleteMessage(message.channel_id, message.id, 'SELF');
-    if([ 'count', 'c' ].includes(args[0])) bulkDeleteMessage(message.channel_id, args[1]);
-    else args.forEach(msg_id => deleteMessage(message.channel_id, msg_id));
-  }
-  else if(cmd === 'send') {
-    let result;
-    deleteMessage(message.channel_id, message.id, 'SELF');
-    try {
-      result = await sendMessage(JSON.parse(args.join(' ')), message.channel_id);
-    } catch(e) {
-      result = await sendMessage(e.message, message.channel_id);
+
+  switch(cmd) {
+    case 'delete': {
+      deleteMessage(message.channel_id, message.id, 'SELF');
+      if([ 'count', 'c' ].includes(args[0])) bulkDeleteMessage(message.channel_id, args[1]);
+      else args.forEach(msg_id => deleteMessage(message.channel_id, msg_id));
+      break;
     }
-    addReaction(message.channel_id, result.id, 'delete', '721260517875777546');
+    case 'send': {
+      let result;
+      deleteMessage(message.channel_id, message.id, 'SELF');
+      try {
+        result = await sendMessage(JSON.parse(args.join(' ')), message.channel_id);
+      } catch(e) {
+        result = await sendMessage(e.message, message.channel_id);
+      }
+      addReaction(message.channel_id, result.id, 'delete', '721260517875777546');
+      break;
+    }
   }
 });
 

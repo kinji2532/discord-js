@@ -1,14 +1,18 @@
 import fetch from 'node-fetch';
 
 import dotenv from 'dotenv';
-dotenv.config();
+dotenv.config({ path: '../.env' });
+
+/** @typedef { import('./typedef.d.ts').BaseMessage } BaseMessage */
+/** @typedef { import('./typedef.d.ts').SendMessageData } SendMessageData */
+/** @typedef { import('./typedef.d.ts').BaseChannel } BaseChannel */
+/** @typedef { import('./typedef.d.ts').BaseGuild } BaseGuild */
 
 const url = 'https://discord.com/api/v10';
 const headers = { 
   "Content-Type": "application/json",
-  "Authorization": 'Bot ' + process.env.BOT_TOKEN
+  "Authorization": "Bot " + process.env.BOT_TOKEN
 };
-
 
 export class Interaction {
   constructor(m) {
@@ -103,13 +107,13 @@ export class ReplyManager {
   };
 };
 
-/** @param { string } content @param { channel_id } id @param { send_type } type */
-export async function sendMessage(content, id = '599272915153715201', type = 'BOT') {
+/** @param { string | SendMessageData } content @param { string } ch_id @param { string } [type='BOT'] @returns { Promise<BaseMessage> } */
+export async function sendMessage(content, ch_id, type = 'BOT') {
   const data = typeof content === 'string' ? ({ content }):content;
-  const result = await fetch(`${url}/channels/${id}/messages`, {
+  const result = await fetch(`${url}/channels/${ch_id}/messages`, {
     headers: { 
       "Content-Type": "application/json",
-      "Authorization": type === 'BOT' ? 'Bot '+process.env.BOT_TOKEN : process.env.SELF_TOKEN
+      "Authorization": type === 'BOT' ? `Bot ${process.env.BOT_TOKEN}`:`${process.env.SELF_TOKEN}`
     },
     method: "POST",
     body: JSON.stringify(data)
@@ -121,7 +125,7 @@ export async function deleteMessage(ch_id, msg_id, type = 'BOT') {
   const result = await fetch(`${url}/channels/${ch_id}/messages/${msg_id}`, {
     headers: { 
       "Content-Type": "application/json",
-      "Authorization": type === 'BOT' ? 'Bot '+process.env.BOT_TOKEN : process.env.SELF_TOKEN
+      "Authorization": type === 'BOT' ? `Bot ${process.env.BOT_TOKEN}`:`${process.env.SELF_TOKEN}`
     },
     method: "DELETE"
   });
@@ -149,7 +153,7 @@ export async function deleteReaction(ch_id, msg_id, emoji_name, emoji_id, user_i
     `${url}/channels/${ch_id}/messages/${msg_id}/reactions/${emoji}/${user_id}`, {
     headers: { 
       "Content-Type": "application/json",
-      "Authorization": type === 'BOT' ? 'Bot '+process.env.BOT_TOKEN : process.env.SELF_TOKEN
+      "Authorization": type === 'BOT' ? `Bot ${process.env.BOT_TOKEN}`:`${process.env.SELF_TOKEN}`
     },
     method: "DELETE"
   });
@@ -161,28 +165,30 @@ export async function addReaction(ch_id, msg_id, emoji_name, emoji_id, type = 'B
     `${url}/channels/${ch_id}/messages/${msg_id}/reactions/${emoji}/@me`, {
     headers: { 
       "Content-Type": "application/json",
-      "Authorization": type === 'BOT' ? 'Bot '+process.env.BOT_TOKEN : process.env.SELF_TOKEN
+      "Authorization": type === 'BOT' ? `Bot ${process.env.BOT_TOKEN}`:`${process.env.SELF_TOKEN}`
     },
     method: "PUT"
   });
 };
 
+/** @param { string } id @returns { Promise<BaseGuild> } */
 export async function getGuild(id) {
   const result = await fetch(`${url}/guilds/${id}`, {
     headers: { 
       "Content-Type": "application/json",
-      "Authorization": process.env.SELF_TOKEN
+      "Authorization": `${process.env.SELF_TOKEN}`
     },
     method: "GET"
   });
   return await result.json();
 };
 
+/** @param { string } id @returns { Promise<BaseChannel> } */
 export async function getChannel(id) {
   const result = await fetch(`${url}/channels/${id}`, {
     headers: { 
       "Content-Type": "application/json",
-      "Authorization": process.env.SELF_TOKEN
+      "Authorization": `${process.env.SELF_TOKEN}`
     },
     method: "GET"
   });
@@ -200,6 +206,7 @@ export async function getMessages(ch_id, limit) {
   return await result.json();
 };
 
+/** @param { string } ch_id @param { string } msg_id @returns { Promise<BaseMessage> } */
 export async function getMessage(ch_id, msg_id) {
   const result = await fetch(`${url}/channels/${ch_id}/messages/${msg_id}`, {
     headers: { 
@@ -215,20 +222,20 @@ export async function getReaction(guild_id, emoji_id, type = 'BOT') {
   const result = await fetch(`${url}/guilds/${guild_id}/emojis/${emoji_id}`, {
     headers: { 
       "Content-Type": "application/json",
-      "Authorization": type === 'BOT' ? 'Bot '+process.env.BOT_TOKEN : process.env.SELF_TOKEN
+      "Authorization": type === 'BOT' ? `Bot ${process.env.BOT_TOKEN}`:`${process.env.SELF_TOKEN}`
     },
     method: "GET"
   });
   return await result.json();
 };
 
-/** @param { string } content @param { message_id } message_id @param { channel_id } channel_id @param { send_type } type */
+/** @param { string } content @param { string } message_id @param { string } channel_id @param { string } type */
 export async function editMessage(content, message_id, channel_id, type = 'BOT') {
   const data = typeof content === 'string' ? ({ content }):content;
   const result = await fetch(`${url}/channels/${channel_id}/messages/${message_id}`, {
     headers: {
       "Content-Type": "application/json",
-      "Authorization": type === 'BOT' ? 'Bot '+process.env.BOT_TOKEN : process.env.SELF_TOKEN
+      "Authorization": type === 'BOT' ? `Bot ${process.env.BOT_TOKEN}`:`${process.env.SELF_TOKEN}`
     },
     method: "PATCH",
     body: JSON.stringify(data)
@@ -242,9 +249,9 @@ export function messageUrl(message) {
 
 export async function hasGuildMember(guild_id, user_id) {
   const result = await fetch(`${url}/guilds/${guild_id}/members/${user_id}`, {
-    headers: { 
+    headers: {
       "Content-Type": "application/json",
-      "Authorization": process.env.SELF_TOKEN
+      "Authorization": `${process.env.SELF_TOKEN}`
     },
     method: "GET"
   });
@@ -256,7 +263,7 @@ export function setTyping(id, type = 'BOT') {
   fetch(`${url}/channels/${id}/typing`, {
     headers: { 
       "Content-Type": "application/json",
-      "Authorization": type === 'BOT' ? 'Bot '+process.env.BOT_TOKEN : process.env.SELF_TOKEN
+      "Authorization": type === 'BOT' ? `Bot ${process.env.BOT_TOKEN}`:`${process.env.SELF_TOKEN}`
     },
     method: "POST"
   });
